@@ -140,7 +140,7 @@
 }
 
 .fomo-popup-icon svg {
-  color: #e94560;
+  color: #22c55e;
 }
 
 .fomo-exit-overlay .fomo-popup-icon svg {
@@ -163,7 +163,7 @@
 
 .fomo-popup-code {
   background: #f8f9fa;
-  border: 2px dashed #e94560;
+  border: 2px dashed #22c55e;
   border-radius: 10px;
   padding: 14px 18px;
   margin-bottom: 20px;
@@ -180,7 +180,7 @@
   display: block;
   font-size: 22px;
   font-weight: 800;
-  color: #e94560;
+  color: #22c55e;
   letter-spacing: 2px;
   font-family: monospace;
 }
@@ -188,7 +188,7 @@
 .fomo-popup-btn {
   display: inline-block;
   padding: 14px 36px;
-  background: #e94560;
+  background: #22c55e;
   color: #fff;
   border-radius: 10px;
   font-size: 16px;
@@ -236,7 +236,7 @@
 
 .fomo-countdown-product {
   background: #fff3f5;
-  color: #e94560;
+  color: #22c55e;
   margin-bottom: 12px;
 }
 
