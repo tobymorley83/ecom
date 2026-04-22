@@ -636,6 +636,15 @@ input {
   box-shadow: 0 8px 25px rgba(233, 69, 96, 0.3);
 }
 
+.hero .hero-cta {
+  background: #22c55e;
+}
+
+.hero .hero-cta:hover {
+  background: #16a34a;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
