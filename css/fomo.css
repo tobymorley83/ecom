@@ -1,0 +1,334 @@
+/* ══════════════════════════════════════════════════════════════════
+   FOMO / Urgency Styles
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Recent Purchase Popup ──────────────────────────────────── */
+.fomo-recent-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  z-index: 1500;
+  transform: translateX(-120%);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+  pointer-events: none;
+}
+
+.fomo-recent-popup.fomo-show {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fomo-recent-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px;
+}
+
+.fomo-recent-close:hover {
+  color: #333;
+}
+
+.fomo-recent-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.fomo-recent-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.fomo-recent-text {
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.fomo-recent-text strong {
+  color: #333;
+}
+
+.fomo-recent-product {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fomo-recent-time {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ── 2 & 3. Popup Overlays (Welcome + Exit) ───────────────────── */
+.fomo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.fomo-overlay.fomo-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fomo-popup-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fomo-overlay.fomo-show .fomo-popup-modal {
+  transform: scale(1) translateY(0);
+}
+
+.fomo-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+}
+
+.fomo-popup-close:hover {
+  color: #333;
+}
+
+.fomo-popup-icon {
+  margin-bottom: 12px;
+}
+
+.fomo-popup-icon svg {
+  color: #e94560;
+}
+
+.fomo-exit-overlay .fomo-popup-icon svg {
+  color: #f39c12;
+}
+
+.fomo-popup-modal h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1a1a2e;
+}
+
+.fomo-popup-modal p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.fomo-popup-code {
+  background: #f8f9fa;
+  border: 2px dashed #e94560;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.fomo-popup-code-label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.fomo-popup-code-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #e94560;
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+.fomo-popup-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  background: #e94560;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.fomo-popup-btn:hover {
+  opacity: 0.9;
+}
+
+.fomo-popup-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── 4. Countdown Timer ────────────────────────────────────────── */
+.fomo-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  animation: fomo-pulse 2s ease-in-out infinite;
+}
+
+.fomo-countdown svg {
+  flex-shrink: 0;
+}
+
+.fomo-countdown strong {
+  font-family: monospace;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.fomo-countdown-hero {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  margin-top: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.fomo-countdown-product {
+  background: #fff3f5;
+  color: #e94560;
+  margin-bottom: 12px;
+}
+
+@keyframes fomo-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+/* ── 5. Low Stock Warning ──────────────────────────────────────── */
+.fomo-low-stock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #e67e22;
+  font-weight: 600;
+  margin-top: 8px;
+  padding: 5px 0;
+}
+
+.fomo-low-stock svg {
+  color: #e67e22;
+  flex-shrink: 0;
+}
+
+.fomo-low-stock strong {
+  color: #d35400;
+}
+
+/* Product detail page — slightly bigger */
+.product-info .fomo-low-stock {
+  font-size: 14px;
+  padding: 10px 14px;
+  background: #fef9f3;
+  border-radius: 8px;
+  border: 1px solid #fde8cd;
+  margin-top: 12px;
+}
+
+/* ── 6. Cart Progress Bar ──────────────────────────────────────── */
+.fomo-cart-progress {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: #f0f7ff;
+  border: 1px solid #d0e3f7;
+  border-radius: 10px;
+}
+
+.fomo-cart-progress-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.fomo-cart-progress-track {
+  height: 8px;
+  background: #e0e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fomo-cart-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .fomo-recent-popup {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    max-width: none;
+  }
+
+  .fomo-popup-modal {
+    padding: 28px 20px;
+  }
+
+  .fomo-popup-modal h2 {
+    font-size: 20px;
+  }
+
+  .fomo-popup-code-value {
+    font-size: 18px;
+  }
+
+  .fomo-countdown-hero {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,195 @@
+/* /css/brevo-popup.css
+ * Clean, themable lead-capture popup.
+ * All colors customizable via CSS variables (set inline by JS from theme_color config).
+ */
+
+:root {
+    --bp-bg:        #ffffff;
+    --bp-text:      #18181b;
+    --bp-text-2:    #71717a;
+    --bp-border:    #e4e4e7;
+    --bp-input-bg:  #fafafa;
+    --bp-accent:    #b91c1c;
+    --bp-accent-fg: #ffffff;
+    --bp-error:     #b91c1c;
+    --bp-error-bg:  #fef2f2;
+    --bp-success:   #166534;
+    --bp-shadow:    0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --bp-radius:    12px;
+    --bp-z:         2147483000;
+}
+
+/* ---- Backdrop ---- */
+.bp-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: var(--bp-z);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    animation: bp-fade-in .2s ease-out forwards;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes bp-fade-in   { to { opacity: 1; } }
+@keyframes bp-fade-out  { to { opacity: 0; } }
+@keyframes bp-pop-in    { from { transform: translateY(20px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.bp-backdrop.bp-closing                 { animation: bp-fade-out .15s ease-in forwards; }
+.bp-backdrop.bp-closing .bp-modal       { animation: bp-pop-out .15s ease-in forwards; }
+
+@keyframes bp-pop-out { to { transform: translateY(8px) scale(.98); opacity: 0; } }
+
+/* ---- Modal ---- */
+.bp-modal {
+    background: var(--bp-bg); color: var(--bp-text);
+    border-radius: var(--bp-radius);
+    box-shadow: var(--bp-shadow);
+    width: 100%; max-width: 460px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+    position: relative;
+    animation: bp-pop-in .25s cubic-bezier(.2, .8, .2, 1);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Helvetica, sans-serif;
+}
+
+.bp-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 32px; height: 32px;
+    background: rgba(0,0,0,.04); border: none; color: var(--bp-text-2);
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1;
+    transition: background .15s, color .15s;
+}
+.bp-close:hover { background: rgba(0,0,0,.08); color: var(--bp-text); }
+
+/* ---- Image (optional) ---- */
+.bp-image {
+    width: 100%; aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: var(--bp-radius) var(--bp-radius) 0 0;
+    display: block;
+    background: #f4f4f5;
+}
+
+/* ---- Body ---- */
+.bp-body {
+    padding: 28px 28px 24px;
+}
+.bp-body.bp-no-image { padding-top: 36px; }
+
+.bp-headline {
+    font-size: 24px; line-height: 1.2; font-weight: 700;
+    margin: 0 0 8px; letter-spacing: -.01em;
+}
+.bp-subhead {
+    color: var(--bp-text-2);
+    margin: 0 0 20px;
+    font-size: 14px;
+}
+
+/* ---- Form ---- */
+.bp-form { display: flex; flex-direction: column; gap: 12px; }
+.bp-field { display: flex; flex-direction: column; gap: 4px; }
+.bp-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--bp-text-2);
+    text-transform: uppercase; letter-spacing: .04em;
+}
+.bp-input {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--bp-border); border-radius: 8px;
+    background: var(--bp-input-bg); color: var(--bp-text);
+    font: inherit;
+    transition: border-color .12s, background .12s;
+    box-sizing: border-box;
+}
+.bp-input:focus {
+    outline: none;
+    border-color: var(--bp-text);
+    background: var(--bp-bg);
+}
+.bp-input.bp-invalid { border-color: var(--bp-error); background: var(--bp-error-bg); }
+.bp-hint { font-size: 11px; color: var(--bp-text-2); margin: 0; }
+
+.bp-checkbox {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; color: var(--bp-text-2);
+    cursor: pointer; user-select: none;
+    margin-top: 4px;
+}
+.bp-checkbox input { margin: 2px 0 0; cursor: pointer; }
+
+.bp-error {
+    background: var(--bp-error-bg); color: var(--bp-error);
+    padding: 10px 12px; border-radius: 6px;
+    font-size: 13px;
+    margin: 4px 0 0;
+}
+
+.bp-submit {
+    margin-top: 8px;
+    padding: 13px 16px;
+    background: var(--bp-accent); color: var(--bp-accent-fg);
+    border: none; border-radius: 8px;
+    font: 600 15px/1 system-ui, sans-serif;
+    cursor: pointer;
+    transition: filter .15s, transform .05s;
+}
+.bp-submit:hover:not(:disabled)  { filter: brightness(1.08); }
+.bp-submit:active:not(:disabled) { transform: translateY(1px); }
+.bp-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+.bp-fineprint {
+    font-size: 11px; color: var(--bp-text-2);
+    text-align: center; margin: 12px 0 0;
+    line-height: 1.4;
+}
+.bp-fineprint a { color: var(--bp-text-2); text-decoration: underline; }
+
+/* ---- Success state ---- */
+.bp-success {
+    text-align: center; padding: 8px 0;
+}
+.bp-success .bp-headline { color: var(--bp-success); }
+.bp-code {
+    display: inline-block;
+    padding: 14px 22px; margin: 16px 0 8px;
+    background: #f4f4f5;
+    border: 2px dashed var(--bp-text-2);
+    border-radius: 8px;
+    font: 700 22px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: .08em;
+    color: var(--bp-text);
+    user-select: all; cursor: copy;
+}
+.bp-code-copied {
+    color: var(--bp-success); font-size: 12px;
+    margin: 6px 0 16px; min-height: 16px;
+    transition: opacity .2s;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+    .bp-backdrop { padding: 0; align-items: flex-end; }
+    .bp-modal {
+        max-width: none;
+        border-radius: var(--bp-radius) var(--bp-radius) 0 0;
+        max-height: 90vh;
+        animation: bp-slide-up .3s cubic-bezier(.2,.8,.2,1);
+    }
+    .bp-image {
+        aspect-ratio: 21/9;
+        border-radius: var(--bp-radius) var(--bp-radius) 0 0;
+    }
+    .bp-body { padding: 22px 20px 28px; }
+    .bp-headline { font-size: 20px; }
+}
+@keyframes bp-slide-up { from { transform: translateY(100%); } to { transform: none; } }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+    .bp-backdrop, .bp-modal { animation: none; }
+    .bp-backdrop { opacity: 1; }
+}

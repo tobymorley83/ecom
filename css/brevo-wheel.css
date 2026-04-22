@@ -1,0 +1,342 @@
+/* /css/brevo-wheel.css
+ * Spin-to-win wheel. Colorful but restrained.
+ */
+
+:root {
+    --bw-bg:        #ffffff;
+    --bw-text:      #18181b;
+    --bw-text-2:    #71717a;
+    --bw-border:    #e4e4e7;
+    --bw-accent:    #b91c1c;
+    --bw-accent-fg: #ffffff;
+    --bw-shadow:    0 25px 50px -12px rgba(0, 0, 0, 0.30);
+    --bw-z:         2147482500;  /* below popup's z-index */
+}
+
+/* =====================================================================
+   Bubble (minimized state)
+   ===================================================================== */
+.bw-bubble {
+    position: fixed;
+    bottom: 20px; left: 20px;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #f59e0b);
+    color: white;
+    font-size: 28px;
+    border: none; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
+    z-index: var(--bw-z);
+    display: flex; align-items: center; justify-content: center;
+    animation: bw-bubble-pulse 2.5s ease-in-out infinite;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.bw-bubble:hover { transform: scale(1.08); }
+.bw-bubble:active { transform: scale(0.96); }
+
+.bw-bubble[data-position="bottom-right"] { left: auto; right: 20px; }
+
+.bw-bubble-close {
+    position: absolute; top: -4px; right: -4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #18181b; color: white; border: 2px solid white;
+    font-size: 13px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+}
+
+.bw-bubble-tooltip {
+    position: absolute;
+    bottom: 100%; left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: #18181b; color: white;
+    padding: 6px 10px; border-radius: 6px;
+    font-size: 12px; white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.15s;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+.bw-bubble:hover .bw-bubble-tooltip { opacity: 1; }
+
+@keyframes bw-bubble-pulse {
+    0%, 100%  { box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35); }
+    50%       { box-shadow: 0 8px 28px rgba(220, 38, 38, 0.55), 0 0 0 8px rgba(220, 38, 38, 0.1); }
+}
+
+/* =====================================================================
+   Backdrop + Modal (opened state)
+   ===================================================================== */
+.bw-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.60);
+    z-index: var(--bw-z);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    animation: bw-fade-in 0.2s ease-out forwards;
+}
+@keyframes bw-fade-in { to { opacity: 1; } }
+@keyframes bw-fade-out { to { opacity: 0; } }
+.bw-backdrop.bw-closing { animation: bw-fade-out 0.15s ease-in forwards; }
+
+.bw-modal {
+    background: var(--bw-bg); color: var(--bw-text);
+    border-radius: 14px;
+    box-shadow: var(--bw-shadow);
+    width: 100%; max-width: 440px;
+    max-height: calc(100dvh - 32px);
+    overflow: auto;
+    position: relative;
+    animation: bw-pop-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@keyframes bw-pop-in {
+    from { transform: translateY(20px) scale(0.97); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+}
+
+.bw-close, .bw-minimize {
+    position: absolute; top: 10px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05); border: none; color: var(--bw-text-2);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; line-height: 1;
+    transition: background 0.15s, color 0.15s;
+}
+.bw-close:hover, .bw-minimize:hover { background: rgba(0, 0, 0, 0.10); color: var(--bw-text); }
+.bw-close    { right: 10px; }
+.bw-minimize { right: 48px; }
+
+.bw-body { padding: 32px 28px 24px; }
+
+.bw-headline {
+    font: 700 24px/1.2 system-ui, sans-serif;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    text-align: center;
+}
+.bw-subhead {
+    color: var(--bw-text-2);
+    text-align: center;
+    margin: 0 0 20px;
+    font-size: 14px;
+}
+
+/* =====================================================================
+   Intro form (email + phone capture)
+   ===================================================================== */
+.bw-form { display: flex; flex-direction: column; gap: 12px; }
+
+.bw-field { display: flex; flex-direction: column; gap: 4px; }
+.bw-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--bw-text-2);
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.bw-input {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--bw-border); border-radius: 8px;
+    background: #fafafa; color: var(--bw-text);
+    font: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.12s, background 0.12s;
+}
+.bw-input:focus {
+    outline: none;
+    border-color: var(--bw-text);
+    background: var(--bw-bg);
+}
+.bw-input.bw-invalid { border-color: #dc2626; background: #fef2f2; }
+.bw-hint { font-size: 11px; color: var(--bw-text-2); margin: 0; }
+
+.bw-checkbox {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; color: var(--bw-text-2);
+    cursor: pointer; user-select: none;
+    margin-top: 4px;
+}
+.bw-checkbox input { margin: 2px 0 0; cursor: pointer; }
+
+.bw-error {
+    background: #fef2f2; color: #991b1b;
+    padding: 10px 12px; border-radius: 6px;
+    font-size: 13px;
+    margin: 4px 0 0;
+}
+
+.bw-cta {
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: var(--bw-accent); color: var(--bw-accent-fg);
+    border: none; border-radius: 8px;
+    font: 700 15px/1 system-ui, sans-serif;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.05s;
+}
+.bw-cta:hover:not(:disabled)  { filter: brightness(1.08); }
+.bw-cta:active:not(:disabled) { transform: translateY(1px); }
+.bw-cta:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.bw-fineprint {
+    font-size: 11px; color: var(--bw-text-2);
+    text-align: center; margin: 12px 0 0;
+    line-height: 1.4;
+}
+
+/* =====================================================================
+   Wheel itself
+   ===================================================================== */
+.bw-wheel-wrap {
+    position: relative;
+    width: 320px; height: 320px;
+    margin: 0 auto 20px;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18));
+}
+@media (max-width: 400px) {
+    .bw-wheel-wrap { width: 280px; height: 280px; }
+}
+
+/* Wrapper div that actually rotates — unambiguous center-origin rotation */
+#bw-wheel-rotor {
+    width: 100%; height: 100%;
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+
+.bw-wheel {
+    width: 100%; height: 100%;
+    display: block;  /* avoid inline-baseline spacing */
+}
+
+.bw-wheel-pointer {
+    position: absolute;
+    top: -8px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 24px solid var(--bw-text);
+    z-index: 2;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+.bw-wheel-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: var(--bw-bg);
+    border: 4px solid var(--bw-text);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    font: 700 14px/1 system-ui;
+    color: var(--bw-text);
+    z-index: 1;
+}
+
+.bw-spin-info {
+    text-align: center;
+    color: var(--bw-text-2);
+    font-size: 13px;
+    margin: 0 0 16px;
+}
+.bw-spin-info strong { color: var(--bw-text); }
+
+.bw-result {
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    animation: bw-result-in 0.3s ease-out;
+}
+.bw-result.bw-result-nothing { background: #f4f4f5; color: #52525b; }
+.bw-result.bw-result-win     { background: #fef3c7; color: #92400e; font-size: 16px; }
+@keyframes bw-result-in {
+    from { transform: translateY(-8px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+}
+
+/* =====================================================================
+   Claim screen
+   ===================================================================== */
+.bw-claim-code {
+    display: inline-block;
+    padding: 16px 24px; margin: 12px 0;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px dashed #d97706;
+    border-radius: 8px;
+    font: 700 22px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: 0.08em;
+    color: #78350f;
+    user-select: all;
+}
+
+.bw-claim-gift {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border-radius: 8px;
+    margin: 12px 0;
+    text-align: left;
+}
+.bw-claim-gift-icon {
+    width: 48px; height: 48px;
+    background: white; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+.bw-claim-gift-text { font-size: 14px; color: #14532d; }
+.bw-claim-gift-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+
+.bw-success {
+    text-align: center;
+}
+
+/* =====================================================================
+   Confetti overlay
+   ===================================================================== */
+.bw-confetti {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: calc(var(--bw-z) + 1);
+    overflow: hidden;
+}
+.bw-confetti-piece {
+    position: absolute;
+    width: 10px; height: 14px;
+    top: -20px;
+    animation: bw-confetti-fall linear forwards;
+}
+@keyframes bw-confetti-fall {
+    to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* =====================================================================
+   Mobile adjustments
+   ===================================================================== */
+@media (max-width: 480px) {
+    .bw-backdrop { padding: 0; align-items: flex-end; }
+    .bw-modal {
+        max-width: none;
+        border-radius: 14px 14px 0 0;
+        max-height: 92vh;
+        animation: bw-slide-up 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .bw-body { padding: 28px 20px 24px; }
+    .bw-bubble { width: 56px; height: 56px; font-size: 24px; bottom: 16px; left: 16px; }
+    .bw-bubble[data-position="bottom-right"] { right: 16px; }
+}
+@keyframes bw-slide-up { from { transform: translateY(100%); } to { transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .bw-backdrop, .bw-modal, .bw-bubble, .bw-confetti-piece, .bw-result { animation: none; }
+    .bw-backdrop { opacity: 1; }
+    #bw-wheel-rotor { transition: none !important; }
+}

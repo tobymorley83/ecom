@@ -1,0 +1,83 @@
+# ============================================================
+# Per-site config & secrets (NEVER committed)
+# ============================================================
+
+# Root-level site config (language, currency, traffic, discount codes, secrets)
+/config.php
+
+# Product catalog (per-site)
+/data/products.json
+/data/productnonfb.json
+/data/orders/
+
+# Brevo email integration secrets
+brevo/config.local.php
+brevo/*.local.php
+brevo/outbox/
+brevo/outbox-failed/
+
+# Deploy config (per-site webhook secret)
+/config/config.php
+/config/config.ini
+/config/config.*.php
+/config/site.json
+/config/products.json
+
+# Env files
+.env
+.env.*
+
+# ============================================================
+# Runtime data / uploads / cache / logs
+# ============================================================
+
+uploads/
+user-uploads/
+media/uploads/
+public/uploads/
+
+cache/
+.cache/
+tmp/
+sessions/
+*.cache
+
+*.log
+logs/
+
+# ============================================================
+# Dependencies / build artifacts
+# ============================================================
+
+vendor/
+node_modules/
+dist/
+build/
+
+# ============================================================
+# IDE / OS / panel-managed
+# ============================================================
+
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.user.ini
+
+# ============================================================
+# Database dumps / backups
+# ============================================================
+
+*.sql.gz
+*.sql.bz2
+dump_*.sql
+backup_*.sql
+*.bak
+
+# Let's Encrypt validation tokens (aaPanel manages)
+/.well-known/acme-challenge/
+
+# Scratch folder (never commit)
+temp/
