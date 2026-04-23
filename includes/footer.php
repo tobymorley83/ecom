@@ -60,5 +60,6 @@
 <?php include __DIR__ . '/fomo-config.php'; ?>
   <script src="/js/fomo.js"></script>
 
+  <script async defer src="https://www.uchat.com.au/js/widget/c0ltuu1a4u1qmsaz/float.js"></script>
 </body>
 </html>
