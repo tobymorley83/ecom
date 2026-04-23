@@ -174,6 +174,19 @@ $config['site_name']    = 'Ofertas y Descuento';
 $config['support_email'] = 'support@ofertasydescuento.com';
 
 
+// ── Tracking / Analytics ─────────────────────────────────────────────
+// sitebehaviour_secret : Per-site SiteBehaviour tracking ID.
+//                        Leave '' to skip the SiteBehaviour snippet.
+// facebook_pixels      : Zero, one, or more Meta Pixel IDs. Each ID gets
+//                        its own fbq('init') + noscript img. Leave [] to
+//                        skip the Meta Pixel snippet entirely.
+
+$config['tracking'] = [
+    'sitebehaviour_secret' => '',
+    'facebook_pixels'      => [],   // e.g. ['937583255649675'] or ['ID1', 'ID2']
+];
+
+
 
 // ── Bundle Image Settings ────────────────────────────────────────────
 // width/height : Output image dimensions in pixels

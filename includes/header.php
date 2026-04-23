@@ -33,26 +33,59 @@ $brevoUid = brevo_ensure_uid();   // Sets bo_uid cookie if missing
   <link rel="stylesheet" href="/css/brevo-wheel.css?v=3">
 
   <?php include __DIR__ . '/config-js.php'; ?>
+<?php
+$tracking = isset($config['tracking']) && is_array($config['tracking']) ? $config['tracking'] : [];
+$sbSecret = isset($tracking['sitebehaviour_secret']) ? trim((string)$tracking['sitebehaviour_secret']) : '';
+$fbPixels = [];
+if (!empty($tracking['facebook_pixels']) && is_array($tracking['facebook_pixels'])) {
+    foreach ($tracking['facebook_pixels'] as $pid) {
+        $pid = trim((string)$pid);
+        if ($pid !== '') { $fbPixels[] = $pid; }
+    }
+}
+?>
+<?php if ($sbSecret !== ''): ?>
 <script type="text/javascript">
-      (
-        function() {
-            try {
-              if(window.location && window.location.search && window.location.search.indexOf('capture-sitebehaviour-heatmap') !== -1) {
-                sessionStorage.setItem('capture-sitebehaviour-heatmap', '_');
-              }
-         
-              var sbSiteSecret = 'e46ffa43-f6ee-4576-81f8-f04939d0a342';
-              window.sitebehaviourTrackingSecret = sbSiteSecret;
-              var scriptElement = document.createElement('script');
-              scriptElement.defer = true;
-              scriptElement.id = 'site-behaviour-script-v2';
-              scriptElement.src = 'https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=' + sbSiteSecret;
-              document.head.appendChild(scriptElement); 
-            }
-            catch (e) {console.error(e)}
-        }
-      )()
+  (function() {
+    try {
+      if (window.location && window.location.search && window.location.search.indexOf('capture-sitebehaviour-heatmap') !== -1) {
+        sessionStorage.setItem('capture-sitebehaviour-heatmap', '_');
+      }
+      var sbSiteSecret = <?php echo json_encode($sbSecret); ?>;
+      window.sitebehaviourTrackingSecret = sbSiteSecret;
+      var scriptElement = document.createElement('script');
+      scriptElement.defer = true;
+      scriptElement.id = 'site-behaviour-script-v2';
+      scriptElement.src = 'https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=' + sbSiteSecret;
+      document.head.appendChild(scriptElement);
+    } catch (e) { console.error(e); }
+  })();
 </script>
+<?php endif; ?>
+<?php if (!empty($fbPixels)): ?>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+<?php foreach ($fbPixels as $pid): ?>
+fbq('init', <?php echo json_encode($pid); ?>);
+<?php endforeach; ?>
+fbq('track', 'PageView');
+</script>
+<noscript>
+<?php foreach ($fbPixels as $pid): ?>
+<img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=<?php echo urlencode($pid); ?>&ev=PageView&noscript=1" />
+<?php endforeach; ?>
+</noscript>
+<!-- End Meta Pixel Code -->
+<?php endif; ?>
 </head>
 <body>
   <div class="announcement-bar">
