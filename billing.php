@@ -35,6 +35,16 @@ if (empty($productIds) || empty($productNames)) {
     exit;
 }
 
+// Need at least one paid item — free gifts alone can't proceed.
+$hasPaidItem = false;
+foreach ($cartItems as $ci) {
+    if (empty($ci['is_free_gift'])) { $hasPaidItem = true; break; }
+}
+if (!$hasPaidItem) {
+    header('Location: /cart.php');
+    exit;
+}
+
 // ── Re-validate discount server-side ─────────────────────────────────
 $discountCodes = $config['traffic'][$trafficSource]['discount_codes'] ?? [];
 $discountLabel = '';

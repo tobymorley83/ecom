@@ -62,7 +62,7 @@
       "shipping": "Shipping",
       "free": "FREE",
       "total": "Total",
-      "proceed_checkout": "Proceed to Checkout",
+      "proceed_checkout": "Go to Checkout",
       "item": "item",
       "items": "items",
       "each": "each",
@@ -74,7 +74,8 @@
       "discount_invalid": "Invalid discount code",
       "free_gift": "Free gift from your spin!",
       "free_gift_badge": "GIFT",
-      "value": "value"
+      "value": "value",
+      "add_product_first": "Add at least one product to continue"
     },
     "checkout": {
       "request_order": "Request Order",
@@ -252,7 +253,7 @@
       "shipping": "Envío",
       "free": "GRATIS",
       "total": "Total",
-      "proceed_checkout": "Proceder al Pago",
+      "proceed_checkout": "Ir al Checkout",
       "item": "artículo",
       "items": "artículos",
       "each": "c/u",
@@ -264,7 +265,8 @@
       "discount_invalid": "Código de descuento inválido",
       "free_gift": "¡Regalo gratis de tu giro!",
       "free_gift_badge": "REGALO",
-      "value": "valor"
+      "value": "valor",
+      "add_product_first": "Agrega al menos un producto para continuar"
     },
     "checkout": {
       "request_order": "Solicitar Pedido",
@@ -442,7 +444,7 @@
       "shipping": "Livraison",
       "free": "GRATUIT",
       "total": "Total",
-      "proceed_checkout": "Passer à la Caisse",
+      "proceed_checkout": "Aller au Checkout",
       "item": "article",
       "items": "articles",
       "each": "l'unité",
@@ -454,7 +456,8 @@
       "discount_invalid": "Code promo invalide",
       "free_gift": "Cadeau gratuit de votre tirage !",
       "free_gift_badge": "CADEAU",
-      "value": "valeur"
+      "value": "valeur",
+      "add_product_first": "Ajoutez au moins un produit pour continuer"
     },
     "checkout": {
       "request_order": "Demander une Commande",
@@ -632,7 +635,7 @@
       "shipping": "Versand",
       "free": "KOSTENLOS",
       "total": "Gesamt",
-      "proceed_checkout": "Zur Kasse",
+      "proceed_checkout": "Zum Checkout",
       "item": "Artikel",
       "items": "Artikel",
       "each": "Stk.",
@@ -644,7 +647,8 @@
       "discount_invalid": "Ungültiger Rabattcode",
       "free_gift": "Gratisgeschenk aus Ihrem Glücksrad!",
       "free_gift_badge": "GESCHENK",
-      "value": "Wert"
+      "value": "Wert",
+      "add_product_first": "Fügen Sie mindestens ein Produkt hinzu, um fortzufahren"
     },
     "checkout": {
       "request_order": "Bestellung Anfragen",
@@ -822,7 +826,7 @@
       "shipping": "Spedizione",
       "free": "GRATIS",
       "total": "Totale",
-      "proceed_checkout": "Vai al Pagamento",
+      "proceed_checkout": "Vai al Checkout",
       "item": "articolo",
       "items": "articoli",
       "each": "cad.",
@@ -834,7 +838,8 @@
       "discount_invalid": "Codice sconto non valido",
       "free_gift": "Regalo gratuito dalla tua giocata!",
       "free_gift_badge": "REGALO",
-      "value": "valore"
+      "value": "valore",
+      "add_product_first": "Aggiungi almeno un prodotto per continuare"
     },
     "checkout": {
       "request_order": "Richiedi Ordine",

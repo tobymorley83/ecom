@@ -78,6 +78,11 @@ var CartPage = (function() {
     var count = Cart.getCount();
     var countText = count + ' ' + (count === 1 ? I18n.t('cart.item') : I18n.t('cart.items'));
 
+    var hasPaidItem = false;
+    for (var k = 0; k < items.length; k++) {
+      if (!items[k].is_free_gift) { hasPaidItem = true; break; }
+    }
+
     var itemsHtml = '';
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
@@ -213,7 +218,9 @@ var CartPage = (function() {
             '<span>' + I18n.t('cart.total') + '</span>' +
             '<span>' + Currency.format(finalTotal) + '</span>' +
           '</div>' +
-          '<button class="checkout-btn" id="btn-checkout" onclick="CartPage.checkout()">' + I18n.t('cart.proceed_checkout') + '</button>' +
+          '<button class="checkout-btn" id="btn-checkout" onclick="CartPage.checkout()"' +
+            (hasPaidItem ? '' : ' disabled') + '>' + I18n.t('cart.proceed_checkout') + '</button>' +
+          (hasPaidItem ? '' : '<p class="checkout-blocked-note">' + I18n.t('cart.add_product_first') + '</p>') +
           '<div class="cart-trust-icons">' +
             '<div class="cart-trust-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> SSL Secure</div>' +
             '<div class="cart-trust-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 90-Day Guarantee</div>' +
@@ -246,6 +253,16 @@ var CartPage = (function() {
     // Build cart data and POST to billing.php
     var items = Cart.getItems();
     if (items.length === 0) return;
+
+    // Free gifts alone don't qualify — need at least one paid item.
+    var hasPaidItem = false;
+    for (var k = 0; k < items.length; k++) {
+      if (!items[k].is_free_gift) { hasPaidItem = true; break; }
+    }
+    if (!hasPaidItem) {
+      Cart.showToast(I18n.t('cart.add_product_first'));
+      return;
+    }
 
     var lang = I18n.getLang();
 
