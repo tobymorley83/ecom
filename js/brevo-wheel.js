@@ -601,6 +601,7 @@
         var body =
             '<h2 class="bw-headline">' + escapeHtml(t.result_win) + ' 🎉</h2>' +
             '<p class="bw-subhead">' + escapeHtml(t.claim_form_subhead || 'Almost there! Enter your details to claim your prize.') + '</p>' +
+            (segment.type === 'free_gift' ? renderGiftPreview(segment) : '') +
             '<form class="bw-form" novalidate>' +
                 '<div class="bw-error" hidden></div>';
 
@@ -752,14 +753,8 @@
             body += '<p class="bw-subhead">' + escapeHtml(t.claim_body_discount) + '</p>';
             body += '<div class="bw-claim-code">' + escapeHtml(code.toUpperCase()) + '</div>';
         } else if (segment.type === 'free_gift') {
-            var giftName = getGiftProductName(segment);
-            body += '<div class="bw-claim-gift">' +
-                '<div class="bw-claim-gift-icon">🎁</div>' +
-                '<div class="bw-claim-gift-text">' +
-                    (giftName ? '<strong>' + escapeHtml(giftName) + '</strong>' : '') +
-                    escapeHtml(t.claim_body_gift) +
-                '</div>' +
-            '</div>';
+            body += renderGiftPreview(segment);
+            body += '<p class="bw-subhead">' + escapeHtml(t.claim_body_gift) + '</p>';
         }
 
         body += '<button type="button" class="bw-cta" id="bw-claim-btn">' + escapeHtml(t.claim_button) + '</button>';
@@ -791,13 +786,32 @@
         return segment.fallback_product_id || cfg.free_gift_product_id || null;
     }
 
-    function getGiftProductName(segment) {
+    function getGiftProductInfo(segment) {
         var id = resolveGiftProductId(segment);
-        if (!id || typeof Products === 'undefined' || !Products.getById) return '';
+        if (!id || typeof Products === 'undefined' || !Products.getById) return null;
         var p = Products.getById(id);
-        if (!p) return '';
+        if (!p) return null;
         var lang = (window.I18n && I18n.getLang) ? I18n.getLang() : 'en';
-        return (p[lang] && p[lang].name) || (p.en && p.en.name) || '';
+        return {
+            id:          id,
+            image:       p.image || '',
+            name:        (p[lang] && p[lang].name)        || (p.en && p.en.name)        || '',
+            description: (p[lang] && p[lang].description) || (p.en && p.en.description) || ''
+        };
+    }
+
+    function renderGiftPreview(segment) {
+        var info = getGiftProductInfo(segment);
+        var iconHtml = (info && info.image)
+            ? '<img src="' + escapeHtml(info.image) + '" alt="' + escapeHtml(info.name || '') + '">'
+            : '🎁';
+        return '<div class="bw-claim-gift">' +
+            '<div class="bw-claim-gift-icon">' + iconHtml + '</div>' +
+            '<div class="bw-claim-gift-text">' +
+                (info && info.name ? '<strong>' + escapeHtml(info.name) + '</strong>' : '') +
+                (info && info.description ? '<p>' + escapeHtml(info.description) + '</p>' : '') +
+            '</div>' +
+        '</div>';
     }
 
     function applyFreeGift(segment) {
