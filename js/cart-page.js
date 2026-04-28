@@ -239,7 +239,7 @@ var CartPage = (function() {
   }
 
   function checkout() {
-    // Build cart data and POST to checkout.php
+    // Build cart data and POST to billing.php
     var items = Cart.getItems();
     if (items.length === 0) return;
 
@@ -272,10 +272,10 @@ var CartPage = (function() {
       });
     }
 
-    // Create and submit a hidden form to checkout.php
+    // Create and submit a hidden form to billing.php
     var form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/checkout.php';
+    form.action = '/billing.php';
     form.target = '_blank';
 
     var fields = {

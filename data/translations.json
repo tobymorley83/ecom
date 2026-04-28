@@ -101,6 +101,17 @@
       "success_message": "Thank you for your order request. Our customer support team will review your order, verify product availability, and contact you within 24 hours to finalize your purchase.",
       "success_check_email": "Please check your email for a confirmation with your order details."
     },
+    "billing": {
+      "title": "Billing Information",
+      "intro": "Please fill in your details to continue.",
+      "go_to_payment": "Go to Payment",
+      "fill_required": "Please complete all fields correctly."
+    },
+    "thankyou": {
+      "title": "Thank You!",
+      "message": "We have received your order request. Our team will contact you shortly to confirm details and arrange delivery.",
+      "email_check": "A confirmation has been sent to your email."
+    },
     "footer": {
       "about": "About Us",
       "about_text": "We are dedicated to bringing you the best products at unbeatable prices. Quality and customer satisfaction are our top priorities.",
@@ -275,6 +286,17 @@
       "success_title": "¡Solicitud de Pedido Recibida!",
       "success_message": "Gracias por tu solicitud de pedido. Nuestro equipo de atención al cliente revisará tu pedido, verificará la disponibilidad del producto y se comunicará contigo dentro de las 24 horas para finalizar tu compra.",
       "success_check_email": "Por favor revisa tu correo electrónico para una confirmación con los detalles de tu pedido."
+    },
+    "billing": {
+      "title": "Información de Facturación",
+      "intro": "Por favor completa tus datos para continuar.",
+      "go_to_payment": "Ir al Pago",
+      "fill_required": "Por favor completa todos los campos correctamente."
+    },
+    "thankyou": {
+      "title": "¡Gracias!",
+      "message": "Hemos recibido tu solicitud de pedido. Nuestro equipo se pondrá en contacto contigo en breve para confirmar los detalles y coordinar la entrega.",
+      "email_check": "Se ha enviado una confirmación a tu correo electrónico."
     },
     "footer": {
       "about": "Sobre Nosotros",

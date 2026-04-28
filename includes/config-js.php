@@ -121,6 +121,7 @@ var SiteConfig = {
   availableLangs: <?php echo json_encode($config['available_langs']); ?>,
   langOverride: <?php echo json_encode($langOverride); ?>,
   currency: <?php echo json_encode($config['currency']); ?>,
+  country: <?php echo json_encode($config['country'] ?? 'US'); ?>,
   productsFile: <?php echo json_encode($resolvedTraffic['products_file']); ?>,
   discountCodes: <?php echo json_encode($jsDiscountCodes); ?>,
   discountParam: <?php echo json_encode($validDiscountParam); ?>,

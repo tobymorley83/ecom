@@ -174,6 +174,13 @@ $config['site_name']    = 'Ofertas y Descuento';
 $config['support_email'] = 'support@ofertasydescuento.com';
 
 
+// ── Default Country ──────────────────────────────────────────────────
+// ISO 3166-1 alpha-2 code (e.g. 'MX', 'ES', 'US'). Used to preselect
+// the country dropdown and the phone prefix on the billing page.
+
+$config['country'] = 'MX';
+
+
 // ── Tracking / Analytics ─────────────────────────────────────────────
 // sitebehaviour_secret : Per-site SiteBehaviour tracking ID.
 //                        Leave '' to skip the SiteBehaviour snippet.
