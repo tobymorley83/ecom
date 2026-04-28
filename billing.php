@@ -21,8 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$productIds    = json_decode($_POST['product_ids']   ?? '[]', true);
-$productNames  = json_decode($_POST['product_names'] ?? '[]', true);
+$productIds    = json_decode($_POST['product_ids']   ?? '[]', true) ?: [];
+$productNames  = json_decode($_POST['product_names'] ?? '[]', true) ?: [];
+$cartItems     = json_decode($_POST['cart_items']    ?? '[]', true) ?: [];
 $subtotal      = floatval($_POST['subtotal'] ?? 0);
 $total         = floatval($_POST['total']    ?? 0);
 $discountCode  = trim($_POST['discount_code'] ?? '');
@@ -36,13 +37,28 @@ if (empty($productIds) || empty($productNames)) {
 
 // ── Re-validate discount server-side ─────────────────────────────────
 $discountCodes = $config['traffic'][$trafficSource]['discount_codes'] ?? [];
+$discountLabel = '';
 if ($discountCode !== '') {
     $codeKey = strtolower($discountCode);
     if (isset($discountCodes[$codeKey]) && $discountCodes[$codeKey]['active']) {
         $total = $discountCodes[$codeKey]['fixed_price'];
+        $discountLabel = $discountCodes[$codeKey]['label'] ?? '';
     } else {
         $discountCode = '';
         $total = $subtotal;
+    }
+}
+
+// ── Load product catalog so we can show names/images per item ────────
+$productsFile = __DIR__ . ($config['traffic'][$trafficSource]['products_file'] ?? '/data/products.json');
+$productsById = [];
+if (is_file($productsFile)) {
+    $raw = @file_get_contents($productsFile);
+    $decoded = $raw !== false ? json_decode($raw, true) : null;
+    if (is_array($decoded)) {
+        foreach ($decoded as $p) {
+            if (isset($p['id'])) $productsById[$p['id']] = $p;
+        }
     }
 }
 
@@ -51,12 +67,22 @@ $bundleName     = 'Product Bundle: ' . implode(' + ', $productNames);
 $imageIds       = implode(',', $productIds);
 $bundleImageUrl = $config['site_url'] . '/bundle-image.php?q=' . urlencode($trafficSource . ',' . $imageIds);
 
-$totalFormatted = number_format(
-    $total,
-    $config['currency']['decimals'],
-    $config['currency']['decimal_sep'],
-    ''
-);
+$fmt = function (float $v) use ($config): string {
+    return number_format(
+        $v,
+        $config['currency']['decimals'],
+        $config['currency']['decimal_sep'],
+        $config['currency']['thousands_sep'] ?? ','
+    );
+};
+$money = function (float $v) use ($config, $fmt): string {
+    $sym = $config['currency']['symbol'];
+    $pos = $config['currency']['position'] ?? 'before';
+    return $pos === 'after' ? $fmt($v) . $sym : $sym . $fmt($v);
+};
+
+$totalFormatted = $fmt($total);
+$savings = $subtotal - $total;
 
 include 'includes/header.php';
 ?>
@@ -69,17 +95,72 @@ include 'includes/header.php';
         <div class="checkout-order-summary">
           <h2 data-i18n="checkout.order_summary">Order Summary</h2>
 
-          <div class="checkout-bundle-image">
-            <img src="<?php echo htmlspecialchars($bundleImageUrl); ?>" alt="Order bundle">
+          <div class="order-lines">
+            <?php foreach ($cartItems as $item):
+              $pid       = $item['id'] ?? '';
+              $product   = $productsById[$pid] ?? null;
+              $name      = $product[$lang]['name'] ?? ($product['en']['name'] ?? $pid);
+              $image     = $item['image'] ?? ($product['image'] ?? '');
+              $qty       = (int) ($item['qty'] ?? 1);
+              $price     = (float) ($item['price'] ?? 0);
+              $orig      = (float) ($item['originalPrice'] ?? ($product['originalPrice'] ?? 0));
+              $isGift    = !empty($item['is_free_gift']);
+              $lineTotal = $isGift ? 0.0 : $price * $qty;
+              $savePct   = ($orig > 0 && $price > 0 && $orig > $price)
+                           ? (int) round((1 - $price / $orig) * 100) : 0;
+            ?>
+              <div class="order-line<?php echo $isGift ? ' order-line-gift' : ''; ?>">
+                <div class="order-line-image">
+                  <?php if ($image !== ''): ?>
+                    <img src="<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($name); ?>">
+                  <?php endif; ?>
+                  <?php if ($isGift): ?>
+                    <span class="gift-badge">🎁 <span data-i18n="cart.free_gift_badge">GIFT</span></span>
+                  <?php endif; ?>
+                </div>
+                <div class="order-line-info">
+                  <div class="order-line-title"><?php echo htmlspecialchars($name); ?></div>
+                  <?php if ($isGift): ?>
+                    <div class="order-line-meta order-line-gift-text" data-i18n="cart.free_gift">Free gift from your spin!</div>
+                  <?php else: ?>
+                    <div class="order-line-meta">
+                      <span class="order-line-qty">×<?php echo $qty; ?></span>
+                      <?php if ($savePct > 0): ?>
+                        <span class="order-line-original"><s><?php echo htmlspecialchars($money($orig)); ?></s></span>
+                        <span class="order-line-price"><?php echo htmlspecialchars($money($price)); ?></span>
+                        <span class="order-line-save">-<?php echo $savePct; ?>%</span>
+                      <?php else: ?>
+                        <span class="order-line-price"><?php echo htmlspecialchars($money($price)); ?></span>
+                      <?php endif; ?>
+                    </div>
+                  <?php endif; ?>
+                </div>
+                <div class="order-line-total<?php echo $isGift ? ' order-line-total-gift' : ''; ?>">
+                  <?php echo $isGift
+                    ? '<span data-i18n="cart.free">FREE</span>'
+                    : htmlspecialchars($money($lineTotal)); ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
           </div>
 
-          <div class="checkout-product-name">
-            <?php echo htmlspecialchars($bundleName); ?>
+          <div class="cart-summary-row">
+            <span data-i18n="cart.subtotal">Subtotal</span>
+            <span><?php echo htmlspecialchars($money($subtotal)); ?></span>
           </div>
-
-          <div class="checkout-total-row">
+          <div class="cart-summary-row">
+            <span data-i18n="cart.shipping">Shipping</span>
+            <span class="free-badge" data-i18n="cart.free">FREE</span>
+          </div>
+          <?php if ($discountCode !== '' && $savings > 0): ?>
+          <div class="cart-summary-row discount-row">
+            <span><span data-i18n="cart.discount">Discount</span><?php echo $discountLabel !== '' ? ' (' . htmlspecialchars($discountLabel) . ')' : ''; ?></span>
+            <span class="discount-amount">-<?php echo htmlspecialchars($money($savings)); ?></span>
+          </div>
+          <?php endif; ?>
+          <div class="cart-summary-row total">
             <span data-i18n="cart.total">Total</span>
-            <span class="checkout-total-price"><?php echo htmlspecialchars($config['currency']['symbol'] . $totalFormatted . ' ' . $config['currency']['code']); ?></span>
+            <span class="checkout-total-price"><?php echo htmlspecialchars($money($total) . ' ' . $config['currency']['code']); ?></span>
           </div>
 
           <div class="checkout-trust-badges">

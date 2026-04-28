@@ -58,6 +58,9 @@ $T = function (string $key, string $default) use ($configText, $configFallbk, $j
     return $default;
 };
 
+// ---- Top-level free gift product ID (single source of truth) ----
+$topLevelGiftId = (string) ($w['free_gift_product_id'] ?? '');
+
 // ---- Build segments — validate each one ----
 $segments = [];
 $flaggedWinnerIdx = null;   // captures segments with 'winner' => true
@@ -75,9 +78,11 @@ foreach (($w['segments'] ?? []) as $idx => $seg) {
     if ($type === 'discount') {
         $entry['discount_code'] = (string) ($seg['discount_code'] ?? '');
     } elseif ($type === 'free_gift') {
-        $entry['gift_mode']           = (string) ($seg['gift_mode'] ?? 'same_as_cart_item');
+        // Default mode is 'specific_product' so the top-level
+        // free_gift_product_id is used unless the segment overrides it.
+        $entry['gift_mode']           = (string) ($seg['gift_mode'] ?? 'specific_product');
         $entry['fallback_product_id'] = (string) ($seg['fallback_product_id'] ?? '');
-        $entry['specific_product_id'] = (string) ($seg['specific_product_id'] ?? '');
+        $entry['specific_product_id'] = (string) ($seg['specific_product_id'] ?? $topLevelGiftId);
     }
 
     $segments[] = $entry;
@@ -119,6 +124,9 @@ if ($winnerIdx === null) {
 $public = [
     'enabled'          => true,
     'lang'             => $lang,
+
+    // Free gift (single source of truth — segments fall back to this)
+    'free_gift_product_id' => $topLevelGiftId,
 
     // Timing
     'show_after_seconds' => (int) ($w['show_after_seconds'] ?? 5),

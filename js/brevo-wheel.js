@@ -752,10 +752,11 @@
             body += '<p class="bw-subhead">' + escapeHtml(t.claim_body_discount) + '</p>';
             body += '<div class="bw-claim-code">' + escapeHtml(code.toUpperCase()) + '</div>';
         } else if (segment.type === 'free_gift') {
+            var giftName = getGiftProductName(segment);
             body += '<div class="bw-claim-gift">' +
                 '<div class="bw-claim-gift-icon">🎁</div>' +
                 '<div class="bw-claim-gift-text">' +
-                    '<strong>' + escapeHtml(segment.label) + '</strong>' +
+                    (giftName ? '<strong>' + escapeHtml(giftName) + '</strong>' : '') +
                     escapeHtml(t.claim_body_gift) +
                 '</div>' +
             '</div>';
@@ -772,27 +773,40 @@
     }
 
     // =====================================================================
-    // Free gift: add to cart
+    // Free gift: resolve which product, get product info, add to cart
     // =====================================================================
+    function resolveGiftProductId(segment) {
+        // Priority:
+        //   1. segment.specific_product_id (if 'specific_product' mode)
+        //   2. cfg.free_gift_product_id    (top-level config)
+        //   3. first cart item             (if 'same_as_cart_item' mode)
+        //   4. segment.fallback_product_id (for 'same_as_cart_item' with empty cart)
+        if (segment.gift_mode === 'specific_product') {
+            return segment.specific_product_id || cfg.free_gift_product_id || null;
+        }
+        if (typeof Cart !== 'undefined') {
+            var items = Cart.getItems();
+            if (items.length > 0) return items[0].id;
+        }
+        return segment.fallback_product_id || cfg.free_gift_product_id || null;
+    }
+
+    function getGiftProductName(segment) {
+        var id = resolveGiftProductId(segment);
+        if (!id || typeof Products === 'undefined' || !Products.getById) return '';
+        var p = Products.getById(id);
+        if (!p) return '';
+        var lang = (window.I18n && I18n.getLang) ? I18n.getLang() : 'en';
+        return (p[lang] && p[lang].name) || (p.en && p.en.name) || '';
+    }
+
     function applyFreeGift(segment) {
         if (typeof Cart === 'undefined' || typeof Products === 'undefined') {
             console.warn('[BrevoWheel] Cart or Products module not available; cannot add free gift.');
             return null;
         }
 
-        var targetProductId = null;
-
-        if (segment.gift_mode === 'specific_product') {
-            targetProductId = segment.specific_product_id;
-        } else {
-            // 'same_as_cart_item': pick the first item in cart, fall back to fallback_product_id
-            var items = Cart.getItems();
-            if (items.length > 0) {
-                targetProductId = items[0].id;
-            } else {
-                targetProductId = segment.fallback_product_id;
-            }
-        }
+        var targetProductId = resolveGiftProductId(segment);
 
         if (!targetProductId) {
             console.warn('[BrevoWheel] No target product for free gift.');

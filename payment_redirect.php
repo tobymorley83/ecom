@@ -29,6 +29,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // ── Order data ───────────────────────────────────────────────────────
 $productIds    = json_decode($_POST['product_ids']   ?? '[]', true) ?: [];
 $productNames  = json_decode($_POST['product_names'] ?? '[]', true) ?: [];
+$cartItems     = json_decode($_POST['cart_items']    ?? '[]', true) ?: [];
 $subtotal      = (float) ($_POST['subtotal'] ?? 0);
 $total         = (float) ($_POST['total']    ?? 0);
 $discountCode  = trim($_POST['discount_code'] ?? '');
@@ -115,6 +116,7 @@ $brevoPayload = [
         'discount_code'  => $discountCode,
         'product_ids'    => $productIds,
         'product_names'  => $productNames,
+        'cart_items'     => $cartItems,
         'bundle_name'    => $bundleName,
         'bundle_image'   => $bundleImageUrl,
         'phone_e164'     => $phoneE164,

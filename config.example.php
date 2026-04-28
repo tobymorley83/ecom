@@ -408,6 +408,14 @@ $config['spin_wheel'] = [
     'enabled'      => true,
     'default_lang' => 'es',
 
+    // ── Free Gift ────────────────────────────────────────────────────
+    // The product ID awarded when the user wins on the wheel.
+    // Must match an `id` in /data/products.json. Every "free_gift" segment
+    // below uses this product unless that segment overrides it via
+    // `specific_product_id`.
+
+    'free_gift_product_id' => 'PRODUCT_ID_HERE',
+
     // Timing
     'show_after_seconds' => 5,    // auto-open modal after N seconds on first page load
 
@@ -422,30 +430,18 @@ $config['spin_wheel'] = [
     // Segments — the wheel is drawn in the order listed.
     // Multiple "nothing" segments increase perceived fairness during the first 2 spins.
     // type options: "nothing", "discount", "free_gift"
-    // color: any CSS color (hex, rgb, etc.)
+    // For free_gift segments without `specific_product_id`, the top-level
+    // `free_gift_product_id` (above) is used.
     'segments' => [
-        [ 'type' => 'nothing',   'label' => 'Nothing', 'color' => '#e5e7eb' ],
-        [ 'type' => 'discount',  'label' => '10% OFF', 'color' => '#fbbf24',
-          'discount_code' => 'ruleta10' ],
-        [ 'type' => 'nothing',   'label' => 'Nothing', 'color' => '#d1d5db' ],
-        [ 'type' => 'discount',  'label' => '50% OFF', 'color' => '#dc2626',
-          'discount_code' => 'ruleta50',
+        [ 'type' => 'nothing',   'label' => 'Nothing',   'color' => '#e5e7eb' ],
+        [ 'type' => 'free_gift', 'label' => 'FREE GIFT', 'color' => '#10b981' ],
+        [ 'type' => 'nothing',   'label' => 'Nothing',   'color' => '#d1d5db' ],
+        [ 'type' => 'free_gift', 'label' => 'FREE GIFT', 'color' => '#22c55e',
           'winner' => true ], // ← winner_segment_index = 3 points here
-        [ 'type' => 'nothing',   'label' => 'Nothing', 'color' => '#e5e7eb' ],
-        [ 'type' => 'discount',  'label' => '30% OFF', 'color' => '#f97316',
-          'discount_code' => 'ruleta30' ],
-        [ 'type' => 'nothing',   'label' => 'Nothing', 'color' => '#d1d5db' ],
-        [ 'type' => 'nothing',   'label' => 'Nothing', 'color' => '#e5e7eb' ],
-
-        // Alternative: free gift segments. Use ONE of these modes:
-        //
-        // [ 'type' => 'free_gift', 'label' => 'FREE GIFT!', 'color' => '#10b981',
-        //   'gift_mode' => 'same_as_cart_item',
-        //   'fallback_product_id' => 'PROD_ABC' ],   // used if cart is empty
-        //
-        // [ 'type' => 'free_gift', 'label' => 'FREE GIFT!', 'color' => '#10b981',
-        //   'gift_mode' => 'specific_product',
-        //   'specific_product_id' => 'PROD_GIFT_XYZ' ],
+        [ 'type' => 'nothing',   'label' => 'Nothing',   'color' => '#e5e7eb' ],
+        [ 'type' => 'free_gift', 'label' => 'FREE GIFT', 'color' => '#10b981' ],
+        [ 'type' => 'nothing',   'label' => 'Nothing',   'color' => '#d1d5db' ],
+        [ 'type' => 'nothing',   'label' => 'Nothing',   'color' => '#e5e7eb' ],
     ],
 
     // Fields
@@ -469,34 +465,6 @@ $config['spin_wheel'] = [
     'sound_claim'      => '',    // e.g. '/sounds/wheel/claim.mp3'
 
     'confetti_on_win'  => true,
-
- 
 ];
-// ============================================================================
-// IMPORTANT: you must also add the discount codes referenced above to the
-// existing $config['traffic'][...]['discount_codes'] block. For example:
-//
-//   $config['traffic']['nonfb']['discount_codes'] = [
-//       // ... existing codes ...
-//       'ruleta10' => [
-//           'active' => true,
-//           'label'  => 'Ruleta 10%',
-//           'fixed_price' => 99,   // or whatever the 10% equivalent is
-//       ],
-//       'ruleta30' => [
-//           'active' => true,
-//           'label'  => 'Ruleta 30%',
-//           'fixed_price' => 77,
-//       ],
-//       'ruleta50' => [
-//           'active' => true,
-//           'label'  => 'Ruleta 50%',
-//           'fixed_price' => 55,
-//       ],
-//   ];
-//
-// Without these entries in discount_codes, the cart page will reject the
-// codes as invalid even though the wheel awarded them.
-// ============================================================================
 
 return $config;

@@ -147,6 +147,105 @@
   border-color: var(--color-primary, #1a1a2e);
 }
 
+/* Itemized order summary (billing page) */
+.order-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+}
+
+.order-line {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.order-line-image {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.order-line-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.order-line-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-line-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.order-line-meta {
+  font-size: 12px;
+  color: var(--color-text-light, #6c757d);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-line-qty {
+  font-weight: 600;
+  color: var(--color-text, #1a1a2e);
+}
+
+.order-line-original s {
+  color: var(--color-text-light, #6c757d);
+}
+
+.order-line-price {
+  font-weight: 600;
+  color: var(--color-text, #1a1a2e);
+}
+
+.order-line-save {
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.order-line-total {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text, #1a1a2e);
+  flex-shrink: 0;
+}
+
+.order-line-total-gift {
+  color: var(--color-accent, #22c55e);
+}
+
+.order-line-gift .order-line-image {
+  border: 2px solid var(--color-accent, #22c55e);
+}
+
+.order-line-gift-text {
+  color: var(--color-accent, #22c55e);
+  font-weight: 600;
+  font-size: 12px;
+}
+
 .phone-input-row {
   display: flex;
   gap: 8px;

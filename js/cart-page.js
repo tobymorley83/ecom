@@ -281,6 +281,7 @@ var CartPage = (function() {
     var fields = {
       'product_ids': JSON.stringify(productIds),
       'product_names': JSON.stringify(productNames),
+      'cart_items': JSON.stringify(items),
       'subtotal': subtotal.toFixed(2),
       'total': finalTotal.toFixed(2),
       'discount_code': discountCode,
