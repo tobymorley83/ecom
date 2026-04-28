@@ -5,13 +5,25 @@
     "originalPrice": 29.99,
     "image": "img/products/example.jpg",
     "category": "example",
+    "en": {
+      "name": "Example product",
+      "description": "Replace with real products per site."
+    },
     "es": {
       "name": "Producto ejemplo",
       "description": "Reemplaza con productos reales por sitio."
     },
-    "en": {
-      "name": "Example product",
-      "description": "Replace with real products per site."
+    "fr": {
+      "name": "Produit exemple",
+      "description": "Remplacez par des produits réels par site."
+    },
+    "de": {
+      "name": "Beispielprodukt",
+      "description": "Ersetzen Sie durch echte Produkte pro Standort."
+    },
+    "it": {
+      "name": "Prodotto di esempio",
+      "description": "Sostituisci con prodotti reali per ogni sito."
     }
   }
 ]

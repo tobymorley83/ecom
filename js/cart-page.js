@@ -83,11 +83,15 @@ var CartPage = (function() {
         var item = items[i];
         var product = Products.getById(item.id);
         var lang = I18n.getLang();
-        var name = product ? product[lang].name : item.id;
+        var info = product ? Products.getInfo(product, lang) : {};
+        var name = info.name || item.id;
         var image = product ? product.image : item.image;
     
         if (item.is_free_gift) {
             // ===== Free gift rendering =====
+            var giftValue = (product && typeof product.price === 'number')
+                ? ' <span class="cart-item-gift-value">(' + I18n.t('cart.value') + ' ' + Currency.format(product.price) + ')</span>'
+                : '';
             itemsHtml +=
                 '<div class="cart-item cart-item-gift">' +
                     '<div class="cart-item-image">' +
@@ -97,7 +101,7 @@ var CartPage = (function() {
                     '<div class="cart-item-details">' +
                         '<div>' +
                             '<div class="cart-item-title">' +
-                                '<a href="/product.php?id=' + item.id + '">' + name + '</a>' +
+                                '<a href="/product.php?id=' + item.id + '">' + name + '</a>' + giftValue +
                             '</div>' +
                             '<div class="cart-item-price gift-price">' +
                                 (I18n.t('cart.free_gift') || 'Free gift from your spin!') +
@@ -250,8 +254,9 @@ var CartPage = (function() {
     var productNames = [];
     for (var i = 0; i < items.length; i++) {
       var product = Products.getById(items[i].id);
+      var info = product ? Products.getInfo(product, lang) : {};
       productIds.push(items[i].id);
-      productNames.push(product ? product[lang].name : items[i].id);
+      productNames.push(info.name || items[i].id);
     }
 
     var subtotal = Cart.getTotal();
@@ -272,11 +277,10 @@ var CartPage = (function() {
       });
     }
 
-    // Create and submit a hidden form to billing.php
+    // Create and submit a hidden form to billing.php (same window)
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = '/billing.php';
-    form.target = '_blank';
 
     var fields = {
       'product_ids': JSON.stringify(productIds),

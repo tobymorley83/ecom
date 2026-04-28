@@ -109,6 +109,12 @@ include 'includes/header.php';
               $savePct   = ($orig > 0 && $price > 0 && $orig > $price)
                            ? (int) round((1 - $price / $orig) * 100) : 0;
             ?>
+              <?php
+                $giftValuePrice = $isGift && $product && isset($product['price']) ? (float) $product['price'] : 0.0;
+                $giftValueHtml  = $giftValuePrice > 0
+                  ? ' <span class="order-line-gift-value">(<span data-i18n="cart.value">value</span> ' . htmlspecialchars($money($giftValuePrice)) . ')</span>'
+                  : '';
+              ?>
               <div class="order-line<?php echo $isGift ? ' order-line-gift' : ''; ?>">
                 <div class="order-line-image">
                   <?php if ($image !== ''): ?>
@@ -119,7 +125,7 @@ include 'includes/header.php';
                   <?php endif; ?>
                 </div>
                 <div class="order-line-info">
-                  <div class="order-line-title"><?php echo htmlspecialchars($name); ?></div>
+                  <div class="order-line-title"><?php echo htmlspecialchars($name); ?><?php echo $giftValueHtml; ?></div>
                   <?php if ($isGift): ?>
                     <div class="order-line-meta order-line-gift-text" data-i18n="cart.free_gift">Free gift from your spin!</div>
                   <?php else: ?>
@@ -184,7 +190,7 @@ include 'includes/header.php';
           <h1 data-i18n="billing.title">Billing Information</h1>
           <p class="checkout-form-intro" data-i18n="billing.intro">Please fill in your details to continue.</p>
 
-          <form id="billingForm" class="checkout-form-fields" method="POST" action="/payment_redirect.php" autocomplete="on" novalidate>
+          <form id="billingForm" class="checkout-form-fields" method="POST" action="/payment_redirect.php" target="_blank" autocomplete="on" novalidate>
 
             <h3 data-i18n="checkout.personal_info">Personal Information</h3>
 

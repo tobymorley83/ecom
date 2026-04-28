@@ -472,22 +472,6 @@ input {
   padding: 0 24px;
 }
 
-/* ANNOUNCEMENT BAR */
-.announcement-bar {
-  background: var(--color-primary);
-  color: var(--color-white);
-  text-align: center;
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.announcement-bar span {
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
 /* HEADER */
 .site-header {
   position: sticky;
@@ -599,6 +583,10 @@ input {
 }
 
 .lang-switcher {
+  position: relative;
+}
+
+.lang-switcher-btn {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -610,16 +598,77 @@ input {
   background: var(--color-white);
   cursor: pointer;
   transition: all var(--transition-fast);
+  color: inherit;
 }
 
-.lang-switcher:hover {
+.lang-switcher-btn:hover {
   border-color: var(--color-text-lighter);
   background: var(--color-bg-light);
 }
 
-.lang-switcher .globe-icon {
+.lang-switcher-btn .globe-icon {
   width: 16px;
   height: 16px;
+}
+
+.lang-switcher-caret {
+  transition: transform var(--transition-fast);
+}
+
+.lang-switcher.open .lang-switcher-caret {
+  transform: rotate(180deg);
+}
+
+.lang-switcher-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  z-index: 200;
+}
+
+.lang-switcher-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background var(--transition-fast);
+}
+
+.lang-switcher-item:hover {
+  background: var(--color-bg-light);
+}
+
+.lang-switcher-item.active {
+  background: var(--color-bg-light);
+  font-weight: 600;
+}
+
+.lang-switcher-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 2px 6px;
+  background: var(--color-bg-alt, #f8f9fa);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.lang-switcher-name {
+  flex: 1;
 }
 
 .cart-btn {
@@ -1910,7 +1959,7 @@ input {
     font-size: 18px;
   }
 
-  .lang-switcher span {
+  .lang-switcher-btn #langLabel {
     display: none;
   }
 
@@ -2321,6 +2370,13 @@ input {
     border-radius: 4px;
     letter-spacing: 0.04em;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.cart-item-gift-value,
+.order-line-gift-value {
+  font-weight: 600;
+  color: var(--color-accent, #22c55e);
+  font-size: 13px;
 }
 
 .cart-item-price.gift-price {

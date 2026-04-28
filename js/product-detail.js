@@ -24,10 +24,10 @@ var ProductDetail = (function() {
 
   function render() {
     var lang = I18n.getLang();
-    var info = currentProduct[lang];
+    var info = (typeof Products !== 'undefined' && Products.getInfo) ? Products.getInfo(currentProduct, lang) : (currentProduct[lang] || currentProduct.en || currentProduct.es || {});
     var discount = Math.round((1 - currentProduct.price / currentProduct.originalPrice) * 100);
 
-    document.title = info.name;
+    document.title = info.name || '';
 
     var breadcrumbProduct = document.getElementById('breadcrumbProduct');
     if (breadcrumbProduct) breadcrumbProduct.textContent = info.name;

@@ -35,14 +35,20 @@ var Products = (function() {
     return result;
   }
 
+  function getInfo(product, lang) {
+    if (!product) return {};
+    return product[lang] || product.en || product.es || {};
+  }
+
   function search(query) {
     var q = query.toLowerCase();
     var lang = I18n.getLang();
     var result = [];
     for (var i = 0; i < allProducts.length; i++) {
       var p = allProducts[i];
-      var name = p[lang].name.toLowerCase();
-      var desc = p[lang].description.toLowerCase();
+      var info = getInfo(p, lang);
+      var name = (info.name || '').toLowerCase();
+      var desc = (info.description || '').toLowerCase();
       if (name.indexOf(q) !== -1 || desc.indexOf(q) !== -1) {
         result.push(p);
       }
@@ -66,7 +72,7 @@ var Products = (function() {
 
   function renderCard(product) {
     var lang = I18n.getLang();
-    var info = product[lang];
+    var info = getInfo(product, lang);
     var discount = Math.round((1 - product.price / product.originalPrice) * 100);
 
     var badgeHtml = '';
@@ -197,6 +203,7 @@ var Products = (function() {
     load: load,
     getAll: getAll,
     getById: getById,
+    getInfo: getInfo,
     renderCard: renderCard,
     renderGrid: renderGrid,
     renderFilters: renderFilters,

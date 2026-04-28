@@ -26,7 +26,7 @@
 $config = [];
 
 $config['default_lang'] = 'es';
-$config['available_langs'] = ['en', 'es'];
+$config['available_langs'] = ['en', 'es', 'fr', 'de', 'it'];
 
 
 // ── Currency Settings ────────────────────────────────────────────────

@@ -297,6 +297,12 @@
 }
 .bw-claim-gift-text { font-size: 14px; color: #14532d; min-width: 0; }
 .bw-claim-gift-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.bw-claim-gift-value {
+    font-weight: 600;
+    color: #166534;
+    font-size: 13px;
+    margin-left: 4px;
+}
 .bw-claim-gift-text p {
     margin: 4px 0 0;
     font-size: 12px;

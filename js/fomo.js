@@ -50,7 +50,8 @@ var Fomo = (function() {
 
       var lang = (typeof I18n !== 'undefined') ? I18n.getLang() : 'en';
       var product = pool[rand(0, pool.length - 1)];
-      var name = product[lang] ? product[lang].name : product.en.name;
+      var info = (typeof Products !== 'undefined' && Products.getInfo) ? Products.getInfo(product, lang) : (product[lang] || product.en || product.es || {});
+      var name = info.name || '';
       var image = product.image || '';
       var city = rc.cities[rand(0, rc.cities.length - 1)] || 'México';
       var minsAgo = rand(rc.time_ago_min, rc.time_ago_max);

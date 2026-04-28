@@ -795,9 +795,16 @@
         return {
             id:          id,
             image:       p.image || '',
-            name:        (p[lang] && p[lang].name)        || (p.en && p.en.name)        || '',
-            description: (p[lang] && p[lang].description) || (p.en && p.en.description) || ''
+            price:       (typeof p.price === 'number') ? p.price : 0,
+            name:        (p[lang] && p[lang].name)        || (p.en && p.en.name)        || (p.es && p.es.name)        || '',
+            description: (p[lang] && p[lang].description) || (p.en && p.en.description) || (p.es && p.es.description) || ''
         };
+    }
+
+    function formatGiftValue(price) {
+        if (!price || typeof Currency === 'undefined' || !Currency.format) return '';
+        var label = (window.I18n && I18n.t) ? I18n.t('cart.value') : 'value';
+        return ' <span class="bw-claim-gift-value">(' + escapeHtml(label) + ' ' + escapeHtml(Currency.format(price)) + ')</span>';
     }
 
     function renderGiftPreview(segment) {
@@ -808,7 +815,7 @@
         return '<div class="bw-claim-gift">' +
             '<div class="bw-claim-gift-icon">' + iconHtml + '</div>' +
             '<div class="bw-claim-gift-text">' +
-                (info && info.name ? '<strong>' + escapeHtml(info.name) + '</strong>' : '') +
+                (info && info.name ? '<strong>' + escapeHtml(info.name) + formatGiftValue(info && info.price) + '</strong>' : '') +
                 (info && info.description ? '<p>' + escapeHtml(info.description) + '</p>' : '') +
             '</div>' +
         '</div>';
