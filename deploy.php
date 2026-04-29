@@ -67,14 +67,33 @@ if ($secret && $secret !== 'CHANGE_ME') {
     }
 }
 
+// Serialize concurrent webhook deliveries for this shop so two
+// `git fetch` runs don't race on refs/remotes/origin/main.lock.
+$lock_file = "/tmp/deploy_{$site_key}.lock";
+$lock      = @fopen($lock_file, 'c');
+if ($lock !== false) {
+    flock($lock, LOCK_EX);   // blocks until acquired
+}
+
+// Defensively clear any stale ref-locks left behind by a prior crash.
+foreach ((array) glob($repo_path . '/.git/refs/remotes/origin/*.lock') as $stale) {
+    @unlink($stale);
+}
+@unlink($repo_path . '/.git/index.lock');
+
 $cmd = sprintf(
-    'cd %s && /usr/bin/git fetch origin main 2>&1 && /usr/bin/git reset --hard origin/main 2>&1',
+    'cd %s && /usr/bin/git fetch --prune origin main 2>&1 && /usr/bin/git reset --hard origin/main 2>&1',
     escapeshellarg($repo_path)
 );
 
 $output    = [];
 $exit_code = 0;
 exec($cmd, $output, $exit_code);
+
+if ($lock !== false) {
+    flock($lock, LOCK_UN);
+    fclose($lock);
+}
 
 $result = implode("\n", $output);
 $status = ($exit_code === 0) ? 'SUCCESS' : 'FAILED';
