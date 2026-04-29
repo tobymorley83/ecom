@@ -22,15 +22,23 @@ function brevo_config(?string $path = null, mixed $default = null): mixed
 {
     static $cfg = null;
     if ($cfg === null) {
-        $file = __DIR__ . '/config.local.php';
-        if (!is_file($file)) {
-            throw new RuntimeException(
-                'Brevo client config missing. Copy config.local.example.php to config.local.php and fill it in.'
-            );
+        // Tracked, shared across all shops. Optional config.local.php can
+        // override any keys (gitignored) for local testing.
+        $main  = __DIR__ . '/config.php';
+        $local = __DIR__ . '/config.local.php';
+
+        if (!is_file($main)) {
+            throw new RuntimeException('Brevo client config missing: ' . $main);
         }
-        $cfg = require $file;
+        $cfg = require $main;
         if (!is_array($cfg)) {
             throw new RuntimeException('Brevo client config must return an array.');
+        }
+        if (is_file($local)) {
+            $override = require $local;
+            if (is_array($override)) {
+                $cfg = array_replace_recursive($cfg, $override);
+            }
         }
     }
     if ($path === null) return $cfg;
@@ -43,6 +51,30 @@ function brevo_config(?string $path = null, mixed $default = null): mixed
         $node = $node[$key];
     }
     return $node;
+}
+
+/**
+ * Derive store_domain from the main site config's site_url.
+ * Cached for the rest of the request.
+ */
+function brevo_store_domain(): string
+{
+    static $domain = null;
+    if ($domain !== null) return $domain;
+
+    $siteCfgPath = __DIR__ . '/../config.php';
+    $domain = '';
+    if (is_file($siteCfgPath)) {
+        $siteCfg = @require $siteCfgPath;
+        if (is_array($siteCfg) && !empty($siteCfg['site_url'])) {
+            $host   = parse_url((string) $siteCfg['site_url'], PHP_URL_HOST);
+            $domain = preg_replace('/^www\./', '', (string) $host);
+        }
+    }
+    if ($domain === '') {
+        $domain = (string) brevo_config('store_domain', '');
+    }
+    return $domain;
 }
 
 // ----------------------------------------------------------------------------
@@ -107,7 +139,7 @@ function brevo_send_sync(string $event, array $payload): array
 {
     $url    = rtrim((string) brevo_config('middleware_url'), '/') . '/ingest.php';
     $secret = (string) brevo_config('middleware_secret');
-    $store  = (string) brevo_config('store_domain');
+    $store  = brevo_store_domain();
 
     $body = [
         'event'        => $event,
@@ -168,7 +200,7 @@ function brevo_outbox_write(string $event, array $payload): string|false
 
     $envelope = [
         'event'        => $event,
-        'store_domain' => brevo_config('store_domain'),
+        'store_domain' => brevo_store_domain(),
         'occurred_at'  => $payload['occurred_at'] ?? gmdate('c'),
         'identity'     => $payload['identity']   ?? [],
         'contact'      => $payload['contact']    ?? [],
