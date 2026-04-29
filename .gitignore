@@ -20,6 +20,7 @@ brevo/outbox-failed/
 /config/config.php
 /config/config.ini
 /config/config.*.php
+!/config/config.example.php
 /config/site.json
 /config/products.json
 
