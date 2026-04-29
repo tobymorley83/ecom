@@ -1,8 +1,4 @@
 <?php
-// French-shop config template.
-// Stamp this into a per-site config.php with:
-//   bash tools/deploy-fr-shop.sh <domain>
-// (see tools/deploy-fr-shop.sh — substitutes site URL, name, support email).
 
 $config = [];
 
