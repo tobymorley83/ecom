@@ -151,6 +151,7 @@ var Products = (function() {
     var product = getById(productId);
     if (!product) return;
     Cart.addItem(product);
+    if (window.Ecommerce) Ecommerce.addToCart(product, 1);
 
     if (event && event.target) {
       var btn = event.target.closest('.add-cart-btn');

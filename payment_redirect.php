@@ -127,16 +127,22 @@ $brevoPayload = [
 
 brevo_send('billing_submitted', $brevoPayload);
 
+$orderId = 'ORD-' . strtoupper(bin2hex(random_bytes(6)));
+
 // ── Branch: non-FB → thank-you page; FB → 3rd-party gateway ──────────
 if ($trafficSource !== 'fb') {
     $_SESSION['last_order'] = [
+        'order_id'       => $orderId,
         'bundle_name'    => $bundleName,
         'bundle_image'   => $bundleImageUrl,
         'total'          => $totalFormatted,
+        'total_raw'      => $total,
         'currency_code'  => $config['currency']['code'],
         'currency_symbol'=> $config['currency']['symbol'],
         'firstname'      => $firstname,
         'email'          => $email,
+        'cart_items'     => $cartItems,
+        'discount_code'  => $discountCode,
     ];
     header('Location: /thankyou.php');
     exit;
@@ -147,13 +153,17 @@ $checkoutUrl = $config['traffic']['fb']['checkout_url'] ?? '';
 if ($checkoutUrl === '' || $checkoutUrl === 'CHANGE_ME_PER_SITE') {
     // Misconfigured — fall back to thank-you so we don't drop the lead
     $_SESSION['last_order'] = [
+        'order_id'       => $orderId,
         'bundle_name'    => $bundleName,
         'bundle_image'   => $bundleImageUrl,
         'total'          => $totalFormatted,
+        'total_raw'      => $total,
         'currency_code'  => $config['currency']['code'],
         'currency_symbol'=> $config['currency']['symbol'],
         'firstname'      => $firstname,
         'email'          => $email,
+        'cart_items'     => $cartItems,
+        'discount_code'  => $discountCode,
     ];
     header('Location: /thankyou.php');
     exit;

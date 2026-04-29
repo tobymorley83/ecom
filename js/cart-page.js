@@ -245,6 +245,13 @@ var CartPage = (function() {
   }
 
   function remove(productId) {
+    if (window.Ecommerce) {
+      var p = Products.getById(productId);
+      if (p) {
+        var existing = Cart.getItems().filter(function(it) { return it.id === productId; })[0];
+        Ecommerce.removeFromCart(p, existing ? existing.qty : 1);
+      }
+    }
     Cart.removeItem(productId);
     render();
   }
@@ -293,6 +300,9 @@ var CartPage = (function() {
         discount_code: discountCode
       });
     }
+
+    // Yandex / GA Enhanced Ecommerce: checkout step 1
+    if (window.Ecommerce) Ecommerce.checkout(items, 1);
 
     // Create and submit a hidden form to billing.php (same window)
     var form = document.createElement('form');

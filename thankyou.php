@@ -60,7 +60,31 @@ include 'includes/header.php';
   </section>
 
   <script>
-    if (window.Cart && Cart.clear) Cart.clear();
+    (function() {
+      // Fire the Yandex / GA Enhanced Ecommerce purchase event.
+      // Run after Ecommerce module is available (loaded in footer.php).
+      var orderData = <?php echo json_encode([
+          'order_id'      => $lastOrder['order_id'] ?? '',
+          'cart_items'    => $lastOrder['cart_items'] ?? [],
+          'total_raw'     => (float) ($lastOrder['total_raw'] ?? 0),
+          'discount_code' => $lastOrder['discount_code'] ?? '',
+      ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+
+      function firePurchase() {
+        if (window.Ecommerce && orderData.order_id) {
+          Ecommerce.purchase(
+            orderData.order_id,
+            orderData.cart_items || [],
+            orderData.total_raw,
+            orderData.discount_code || null
+          );
+        }
+        if (window.Cart && Cart.clear) Cart.clear();
+      }
+
+      if (window.Ecommerce) firePurchase();
+      else document.addEventListener('DOMContentLoaded', firePurchase);
+    })();
   </script>
 
 <?php include 'includes/footer.php'; ?>

@@ -2,6 +2,7 @@ var ProductDetail = (function() {
   var currentProduct = null;
   var currentQty = 1;
   var currentImageIndex = 0;
+  var hasFiredView = false;
 
   function init() {
     var params = new URLSearchParams(window.location.search);
@@ -19,6 +20,11 @@ var ProductDetail = (function() {
       }
       render();
       renderRelated(allProducts);
+
+      if (window.Ecommerce && currentProduct && !hasFiredView) {
+        Ecommerce.viewProduct(currentProduct);
+        hasFiredView = true;
+      }
     });
   }
 
@@ -202,6 +208,7 @@ var ProductDetail = (function() {
   function addToCart() {
     if (!currentProduct) return;
     Cart.addItem(currentProduct, currentQty);
+    if (window.Ecommerce) Ecommerce.addToCart(currentProduct, currentQty);
   }
 
   return {

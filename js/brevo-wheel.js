@@ -873,6 +873,9 @@
             // Update the cart count UI if the function exists
             if (Cart.updateCartCount) Cart.updateCartCount();
 
+            // Yandex / GA Enhanced Ecommerce: free gift counts as add-to-cart at price 0
+            if (window.Ecommerce) Ecommerce.addToCart(product, 1, 0);
+
             return targetProductId;
         } catch (e) {
             console.warn('[BrevoWheel] Failed to add gift:', e);
