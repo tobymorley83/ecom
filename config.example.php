@@ -187,10 +187,15 @@ $config['country'] = 'MX';
 // facebook_pixels      : Zero, one, or more Meta Pixel IDs. Each ID gets
 //                        its own fbq('init') + noscript img. Leave [] to
 //                        skip the Meta Pixel snippet entirely.
+// yandex_metrika_ids   : Zero, one, or more Yandex Metrika counter IDs
+//                        (digits only, e.g. '108786437'). Each ID gets
+//                        its own ym('init') + noscript img. Leave [] to
+//                        skip the Yandex.Metrika snippet entirely.
 
 $config['tracking'] = [
     'sitebehaviour_secret' => '',
     'facebook_pixels'      => [],   // e.g. ['937583255649675'] or ['ID1', 'ID2']
+    'yandex_metrika_ids'   => [],   // e.g. ['108786437'] or ['ID1', 'ID2']
 ];
 
 

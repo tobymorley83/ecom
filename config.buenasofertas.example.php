@@ -61,7 +61,8 @@ $config['country'] = 'MX';
 // Tracking / Analytics — fill in when you have IDs for this site.
 $config['tracking'] = [
     'sitebehaviour_secret' => '',
-    'facebook_pixels'      => [],
+    'facebook_pixels'      => [],            // e.g. ['ID1', 'ID2']
+    'yandex_metrika_ids'   => ['108786437'], // e.g. ['ID1', 'ID2']
 ];
 
 $config['bundle_image'] = [

@@ -43,6 +43,13 @@ if (!empty($tracking['facebook_pixels']) && is_array($tracking['facebook_pixels'
         if ($pid !== '') { $fbPixels[] = $pid; }
     }
 }
+$yandexIds = [];
+if (!empty($tracking['yandex_metrika_ids']) && is_array($tracking['yandex_metrika_ids'])) {
+    foreach ($tracking['yandex_metrika_ids'] as $yid) {
+        $yid = preg_replace('/\D/', '', (string)$yid);
+        if ($yid !== '') { $yandexIds[] = $yid; }
+    }
+}
 ?>
 <?php if ($sbSecret !== ''): ?>
 <script type="text/javascript">
@@ -85,6 +92,26 @@ src="https://www.facebook.com/tr?id=<?php echo urlencode($pid); ?>&ev=PageView&n
 <?php endforeach; ?>
 </noscript>
 <!-- End Meta Pixel Code -->
+<?php endif; ?>
+<?php if (!empty($yandexIds)): ?>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+    m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=<?php echo urlencode($yandexIds[0]); ?>', 'ym');
+<?php foreach ($yandexIds as $yid): ?>
+ym(<?php echo (int)$yid; ?>, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+<?php endforeach; ?>
+</script>
+<noscript><div>
+<?php foreach ($yandexIds as $yid): ?>
+<img src="https://mc.yandex.ru/watch/<?php echo urlencode($yid); ?>" style="position:absolute; left:-9999px;" alt="" />
+<?php endforeach; ?>
+</div></noscript>
+<!-- /Yandex.Metrika counter -->
 <?php endif; ?>
 </head>
 <body>
