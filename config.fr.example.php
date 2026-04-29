@@ -1,16 +1,8 @@
 <?php
-/**
- * French-shop config template.
- *
- * Stamp into a new shop with three substitutions, e.g.:
- *
- *   DOMAIN="offresmalines.com"
- *   NAME=$(echo "$DOMAIN" | sed 's/\..*//' | sed 's/.*/\u&/')
- *   cp config.fr.example.php config.php
- *   sed -i "s|__SITE_URL__|https://$DOMAIN|; s|__SUPPORT_EMAIL__|support@$DOMAIN|; s|__SITE_NAME__|$NAME|" config.php
- *   chmod 600 config.php
- *   chown www:www config.php
- */
+// French-shop config template.
+// Stamp this into a per-site config.php with:
+//   bash tools/deploy-fr-shop.sh <domain>
+// (see tools/deploy-fr-shop.sh — substitutes site URL, name, support email).
 
 $config = [];
 
