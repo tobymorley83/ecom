@@ -35,7 +35,7 @@
   }
 
   function setupMobileNav() {
-    var btn = document.getElementById('mobileMenuBtn');
+    var btn = document.getElementById('btn-mobile-menu');
     var overlay = document.getElementById('mobileOverlay');
     var nav = document.getElementById('mobileNav');
     var closeBtn = document.getElementById('mobileNavClose');
@@ -66,7 +66,7 @@
 
   function setupLangSwitcher() {
     var switcher = document.getElementById('langSwitcher');
-    var btn      = document.getElementById('langSwitcherBtn');
+    var btn      = document.getElementById('btn-lang-switcher');
     var menu     = document.getElementById('langSwitcherMenu');
     if (!switcher || !btn || !menu) return;
 

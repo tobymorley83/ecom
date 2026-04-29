@@ -10,7 +10,7 @@ include 'includes/header.php';
       <div class="hero-badge">-70% SALE</div>
       <h1 data-i18n="hero.title">The best products at UNBEATABLE prices!</h1>
       <p data-i18n="hero.subtitle">Discover our selection of premium products at up to 70% off. Free shipping on all orders.</p>
-      <a href="#products" class="hero-cta">
+      <a href="#products" class="hero-cta" id="btn-shop-now">
         <span data-i18n="hero.cta">Shop Now</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </a>
@@ -92,7 +92,7 @@ include 'includes/header.php';
       <p data-i18n="footer.newsletter_desc">Subscribe to get special offers and updates.</p>
       <form class="newsletter-form" onsubmit="return false;">
         <input type="email" data-i18n-placeholder="footer.email_placeholder" placeholder="Your email address">
-        <button type="submit" data-i18n="footer.subscribe">Subscribe</button>
+        <button type="submit" id="btn-newsletter-subscribe" data-i18n="footer.subscribe">Subscribe</button>
       </form>
     </div>
   </section>

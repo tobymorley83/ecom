@@ -70,7 +70,7 @@ var CartPage = (function() {
           '<div class="cart-empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>' +
           '<h2>' + I18n.t('cart.empty') + '</h2>' +
           '<p>' + I18n.t('cart.empty_desc') + '</p>' +
-          '<a href="/" class="hero-cta">' + I18n.t('cart.continue_shopping') + '</a>' +
+          '<a href="/" class="hero-cta" id="btn-continue-shopping">' + I18n.t('cart.continue_shopping') + '</a>' +
         '</div>';
       return;
     }
@@ -114,7 +114,7 @@ var CartPage = (function() {
                         '</div>' +
                         '<div class="cart-item-actions">' +
                             '<div class="gift-qty-locked">x1</div>' +
-                            '<button class="cart-item-remove" onclick="CartPage.remove(\'' + item.id + '\')">' + I18n.t('cart.remove') + '</button>' +
+                            '<button class="cart-item-remove" id="btn-remove-' + item.id + '" onclick="CartPage.remove(\'' + item.id + '\')">' + I18n.t('cart.remove') + '</button>' +
                             '<span class="cart-item-total gift-total">' + (I18n.t('cart.free') || 'FREE') + '</span>' +
                         '</div>' +
                     '</div>' +
@@ -149,7 +149,7 @@ var CartPage = (function() {
                             '<input type="number" value="' + item.qty + '" min="1" max="99" onchange="CartPage.updateQty(\'' + item.id + '\', parseInt(this.value))">' +
                             '<button onclick="CartPage.updateQty(\'' + item.id + '\', ' + (item.qty + 1) + ')">+</button>' +
                         '</div>' +
-                        '<button class="cart-item-remove" onclick="CartPage.remove(\'' + item.id + '\')">' + I18n.t('cart.remove') + '</button>' +
+                        '<button class="cart-item-remove" id="btn-remove-' + item.id + '" onclick="CartPage.remove(\'' + item.id + '\')">' + I18n.t('cart.remove') + '</button>' +
                         '<span class="cart-item-total">' + Currency.format(lineTotal) + '</span>' +
                     '</div>' +
                 '</div>' +
@@ -167,13 +167,13 @@ var CartPage = (function() {
             '<span class="discount-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> ' +
               appliedDiscount.label + ' <code>' + appliedDiscount.code.toUpperCase() + '</code></span>' +
           '</div>' +
-          '<button class="discount-remove-btn" onclick="CartPage.removeDiscount()">&times;</button>' +
+          '<button class="discount-remove-btn" id="btn-discount-remove" onclick="CartPage.removeDiscount()">&times;</button>' +
         '</div>';
     } else {
       discountHtml =
         '<div class="discount-input-row">' +
           '<input type="text" id="discountCodeInput" placeholder="' + I18n.t('cart.discount_placeholder') + '" onkeydown="if(event.key===\'Enter\')CartPage.applyFromInput()">' +
-          '<button class="discount-apply-btn" onclick="CartPage.applyFromInput()">' + I18n.t('cart.apply') + '</button>' +
+          '<button class="discount-apply-btn" id="btn-discount-apply" onclick="CartPage.applyFromInput()">' + I18n.t('cart.apply') + '</button>' +
         '</div>';
     }
 

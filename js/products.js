@@ -103,11 +103,11 @@ var Products = (function() {
         '</div>' +
       '</div>' +
       '<div class="product-card-footer">' +
-        '<button class="add-cart-btn" onclick="Products.addToCart(\'' + product.id + '\', event)">' +
+        '<button class="add-cart-btn" id="btn-add-to-cart-' + product.id + '" onclick="Products.addToCart(\'' + product.id + '\', event)">' +
           '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>' +
           I18n.t('products.add_to_cart') +
         '</button>' +
-        '<a href="/cart.php" class="view-cart-btn view-cart-btn-sm">' +
+        '<a href="/cart.php" class="view-cart-btn view-cart-btn-sm" id="btn-view-cart-' + product.id + '">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>' +
           I18n.t('products.view_cart') +
         '</a>' +
@@ -134,7 +134,7 @@ var Products = (function() {
     for (var i = 0; i < categories.length; i++) {
       var cat = categories[i];
       var activeClass = cat === currentFilter ? ' active' : '';
-      html += '<button class="filter-btn' + activeClass + '" onclick="Products.filter(\'' + cat + '\')">' +
+      html += '<button class="filter-btn' + activeClass + '" id="btn-filter-' + cat + '" onclick="Products.filter(\'' + cat + '\')">' +
         I18n.t('products.filter_' + cat) + '</button>';
     }
     filterBar.innerHTML = html;

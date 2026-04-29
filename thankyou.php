@@ -54,7 +54,7 @@ include 'includes/header.php';
           A confirmation has been sent to your email.
         </p>
 
-        <a href="/" class="hero-cta" data-i18n="cart.continue_shopping">Continue Shopping</a>
+        <a href="/" class="hero-cta" id="btn-continue-shopping" data-i18n="cart.continue_shopping">Continue Shopping</a>
       </div>
     </div>
   </section>

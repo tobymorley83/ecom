@@ -276,7 +276,7 @@ include 'includes/header.php';
             <input type="hidden" name="bundle_name"     value="<?php echo htmlspecialchars($bundleName); ?>">
             <input type="hidden" name="bundle_image"    value="<?php echo htmlspecialchars($bundleImageUrl); ?>">
 
-            <button type="submit" class="checkout-submit-btn">
+            <button type="submit" class="checkout-submit-btn" id="btn-go-to-payment">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
               <span data-i18n="billing.go_to_payment">Go to Payment</span>
             </button>
