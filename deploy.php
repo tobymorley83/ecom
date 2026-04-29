@@ -1,19 +1,47 @@
 <?php
 /**
- * GitHub Webhook - Auto-deploy on push to main.
- * Per-site log file based on config 'site_key'.
+ * GitHub Webhook — auto-deploy on push to main.
+ *
+ * Loads the shared deploy config (tracked at config/deploy.php) and
+ * optionally merges a per-site override (config/config.php, gitignored).
+ *
+ *   site_key   — from override, else parsed from the main site config's
+ *                site_url (host minus TLD), else basename of the install dir
+ *   repo_path  — from override, else __DIR__
+ *   secret     — from override, else the shared secret in config/deploy.php
  */
 
-$config_path = __DIR__ . '/config/config.php';
-$cfg = [];
-$secret = null;
-if (file_exists($config_path)) {
-    $cfg = require $config_path;
-    $secret = $cfg['deploy']['webhook_secret'] ?? null;
+$shared_path   = __DIR__ . '/config/deploy.php';
+$override_path = __DIR__ . '/config/config.php';
+
+$cfg = is_file($shared_path) ? (array) require $shared_path : [];
+if (is_file($override_path)) {
+    $local = require $override_path;
+    if (is_array($local)) {
+        $cfg = array_replace_recursive($cfg, $local);
+    }
 }
 
-$site_key = $cfg['deploy']['site_key'] ?? 'unknown';
-$log_file = "/tmp/deploy_{$site_key}.log";
+$secret    = $cfg['deploy']['webhook_secret'] ?? null;
+$repo_path = $cfg['deploy']['repo_path']      ?? __DIR__;
+
+// Derive site_key: explicit override → host of site_url → install dir name
+$site_key = $cfg['deploy']['site_key'] ?? null;
+if (!$site_key) {
+    $main = __DIR__ . '/config.php';
+    if (is_file($main)) {
+        $sc = @require $main;
+        if (is_array($sc) && !empty($sc['site_url'])) {
+            $host = parse_url((string) $sc['site_url'], PHP_URL_HOST);
+            $host = preg_replace('/^www\./', '', (string) $host);
+            $parts = explode('.', $host);
+            $site_key = $parts[0] ?? '';
+        }
+    }
+    if (!$site_key) $site_key = basename(__DIR__);
+}
+
+$log_file  = "/tmp/deploy_{$site_key}.log";
 $timestamp = date('Y-m-d H:i:s');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -22,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 if ($secret && $secret !== 'CHANGE_ME') {
-    $payload = file_get_contents('php://input');
+    $payload    = file_get_contents('php://input');
     $sig_header = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
 
     if (!$sig_header) {
@@ -39,20 +67,22 @@ if ($secret && $secret !== 'CHANGE_ME') {
     }
 }
 
-$repo_path = $cfg['deploy']['repo_path'] ?? __DIR__;
-
 $cmd = sprintf(
     'cd %s && /usr/bin/git fetch origin main 2>&1 && /usr/bin/git reset --hard origin/main 2>&1',
     escapeshellarg($repo_path)
 );
 
-$output = [];
+$output    = [];
 $exit_code = 0;
 exec($cmd, $output, $exit_code);
 
 $result = implode("\n", $output);
 $status = ($exit_code === 0) ? 'SUCCESS' : 'FAILED';
-file_put_contents($log_file, "$timestamp $status (exit: $exit_code)\n  CMD: $cmd\n  OUTPUT: $result\n\n", FILE_APPEND);
+file_put_contents(
+    $log_file,
+    "$timestamp $status (exit: $exit_code)\n  CMD: $cmd\n  OUTPUT: $result\n\n",
+    FILE_APPEND
+);
 
 if ($exit_code === 0) {
     http_response_code(200);
