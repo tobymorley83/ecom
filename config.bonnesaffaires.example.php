@@ -1,8 +1,8 @@
 <?php
 /**
- * TEMP — buenasofertas.org bootstrap config.
+ * TEMP — bonnesaffaires.org bootstrap config.
  * On the server:
- *   cp config.buenasofertas.example.php config.php
+ *   cp config.bonnesaffaires.example.php config.php
  *   chmod 600 config.php
  *   chown www:www config.php
  * Once tested, this file can be removed from the repo.
@@ -10,12 +10,12 @@
 
 $config = [];
 
-$config['default_lang']    = 'es';
+$config['default_lang']    = 'fr';
 $config['available_langs'] = ['en', 'es', 'fr', 'de', 'it'];
 
 $config['currency'] = [
-    'symbol'        => 'MX$',
-    'code'          => 'MXN',
+    'symbol'        => '€',
+    'code'          => 'EUR',
     'position'      => 'before',
     'decimals'      => 2,
     'thousands_sep' => ',',
@@ -26,14 +26,14 @@ $config['traffic'] = [
 
     'fb' => [
         'products_file'     => '/data/products.json',
-        'checkout_url'      => 'https://letsgo.fruityapples.top/click?key=3cfe693ef86f4ed6a7bf8b337934e353',
-        'allowed_countries' => ['MX', 'ES'],
+        'checkout_url'      => 'https://letsgo.fruityapples.sbs/click?key=34b2be9ae12e464490297ad0461a6b48',
+        'allowed_countries' => ['FR', 'ES'],
 
         'discount_codes' => [
-            'marchsale1' => [ 'label' => 'March Sale',         'fixed_price' => 204.00, 'active' => true  ],
-            'springsale2'=> [ 'label' => 'Spring Special',     'fixed_price' => 204.00, 'active' => true  ],
-            'discount3'  => [ 'label' => 'VIP Discount 2026',  'fixed_price' => 140.00, 'active' => true  ],
-            'offer4'     => [ 'label' => 'Big offer 4',        'fixed_price' => 999.00, 'active' => false ],
+            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.95, 'active' => true  ],
+            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.95,  'active' => true  ],
+            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.95, 'active' => true  ],
+            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.95,  'active' => false ],
         ],
     ],
 
@@ -42,27 +42,27 @@ $config['traffic'] = [
         'checkout_url'  => '/checkout_form.php', // unused by new billing flow; legacy fallback
 
         'discount_codes' => [
-            'marchsale1' => [ 'label' => 'March Sale',         'fixed_price' => 219.00, 'active' => false ],
-            'springsale2'=> [ 'label' => 'Spring Special',     'fixed_price' => 327.00, 'active' => false ],
-            'discount3'  => [ 'label' => 'VIP Discount 2026',  'fixed_price' => 438.00, 'active' => false ],
-            'offer4'     => [ 'label' => 'Big offer 4',        'fixed_price' => 999.00, 'active' => false ],
+            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.95, 'active' => true  ],
+            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.95,  'active' => true  ],
+            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.95, 'active' => true  ],
+            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.95,  'active' => false ],
         ],
     ],
 
 ];
 
-$config['site_url']      = 'https://buenasofertas.org';
-$config['site_name']     = 'Buenas Ofertas';
-$config['support_email'] = 'support@buenasofertas.org';
+$config['site_url']      = 'https://bonnesaffaires.org';
+$config['site_name']     = 'Bonnes Affaires';
+$config['support_email'] = 'support@bonnesaffaires.org';
 
 // Default country for billing form preselect (ISO 3166-1 alpha-2).
-$config['country'] = 'MX';
+$config['country'] = 'FR';
 
-// Tracking / Analytics — fill in when you have IDs for this site.
+// Tracking / Analytics.
 $config['tracking'] = [
     'sitebehaviour_secret' => '',
-    'facebook_pixels'      => [],            // e.g. ['ID1', 'ID2']
-    'yandex_metrika_ids'   => ['108786437'], // e.g. ['ID1', 'ID2']
+    'facebook_pixels'      => ['1330454688906233', '935616556009940'],
+    'yandex_metrika_ids'   => ['108900669'],
 ];
 
 $config['bundle_image'] = [
@@ -73,9 +73,9 @@ $config['bundle_image'] = [
 
 $config['reviewer_pools'] = [
 
-    'MX' => [
-        'names'  => ['María G.', 'Carlos R.', 'Ana L.', 'José M.', 'Sofía P.', 'Diego H.', 'Valentina S.', 'Luis F.', 'Camila T.', 'Andrés V.', 'Fernanda B.', 'Roberto N.'],
-        'cities' => ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Cancún', 'Mérida', 'Querétaro', 'Tijuana', 'León', 'Oaxaca'],
+    'FR' => [
+        'names'  => ['Marie G.', 'Lucas R.', 'Camille L.', 'Thomas M.', 'Chloé S.', 'Julien P.', 'Sophie T.', 'Nicolas F.', 'Emma V.', 'Antoine B.', 'Laura N.', 'Maxime H.'],
+        'cities' => ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
     ],
 
     'ES' => [
@@ -83,24 +83,9 @@ $config['reviewer_pools'] = [
         'cities' => ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Málaga', 'Bilbao', 'Zaragoza', 'Granada', 'Alicante', 'Palma de Mallorca'],
     ],
 
-    'US' => [
-        'names'  => ['Sarah M.', 'James R.', 'Emily L.', 'Michael T.', 'Jessica P.', 'David S.', 'Ashley W.', 'Chris B.', 'Amanda K.', 'Ryan H.', 'Nicole F.', 'Brandon G.'],
-        'cities' => ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Miami', 'Denver', 'Seattle', 'Austin', 'San Diego'],
-    ],
-
-    'CO' => [
-        'names'  => ['María P.', 'Juan C.', 'Daniela R.', 'Andrés M.', 'Valentina L.', 'Sebastián G.', 'Camila H.', 'Diego F.', 'Laura S.', 'Carlos T.'],
-        'cities' => ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena', 'Bucaramanga', 'Santa Marta', 'Pereira'],
-    ],
-
-    'AR' => [
-        'names'  => ['María F.', 'Martín R.', 'Luciana S.', 'Nicolás G.', 'Florencia P.', 'Agustín L.', 'Camila M.', 'Tomás B.', 'Valentina H.', 'Facundo T.'],
-        'cities' => ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza', 'La Plata', 'Mar del Plata', 'San Miguel de Tucumán', 'Salta'],
-    ],
-
     'default' => [
-        'names'  => ['María G.', 'Carlos R.', 'Ana L.', 'José M.', 'Sofía P.', 'Diego H.', 'Laura S.', 'Luis F.', 'Carmen T.', 'Andrés V.'],
-        'cities' => ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Cancún', 'Madrid', 'Barcelona', 'Bogotá'],
+        'names'  => ['Marie G.', 'Lucas R.', 'Camille L.', 'Thomas M.', 'Chloé S.', 'Julien P.', 'Sophie T.', 'Nicolas F.', 'Emma V.', 'Antoine B.', 'Laura N.', 'Maxime H.'],
+        'cities' => ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
     ],
 
 ];
@@ -119,9 +104,10 @@ $config['fomo'] = [
             'la-roche-posay-advanced-skincare-gift-kit',
         ],
         'cities' => [
-            'Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla',
-            'Tijuana', 'León', 'Cancún', 'Mérida', 'Querétaro',
-            'Oaxaca', 'Chihuahua', 'Aguascalientes', 'Morelia',
+            'Paris', 'Marseille', 'Lyon', 'Toulouse',
+            'Nice', 'Nantes', 'Strasbourg', 'Montpellier',
+            'Bordeaux', 'Lille', 'Rennes', 'Reims',
+            'Le Havre', 'Saint-Étienne', 'Toulon',
         ],
         'time_ago_min' => 1,
         'time_ago_max' => 45,
@@ -138,7 +124,7 @@ $config['fomo'] = [
 // Brevo welcome / discount popup — disabled until a discount code is wired.
 $config['popup'] = [
     'enabled'       => false,
-    'default_lang'  => 'es',
+    'default_lang'  => 'fr',
     'discount_code' => '',
     'image'         => '',
     'theme_color'   => '',
@@ -156,24 +142,24 @@ $config['popup'] = [
     'sms_opt_in'     => true,
     'name_field'     => false,
     'text' => [
-        'es' => [
-            'headline'          => '¡10% de descuento en tu primera compra!',
-            'subhead'           => 'Suscríbete y recibe ofertas exclusivas en tu correo.',
-            'email_label'       => 'Correo electrónico',
-            'email_placeholder' => 'tucorreo@ejemplo.com',
-            'phone_label'       => 'Teléfono',
-            'phone_placeholder' => '+52...',
-            'phone_hint'        => 'Incluye el código de país (+52 para México)',
-            'name_label'        => 'Nombre',
-            'sms_opt_in_label'  => 'También quiero recibir ofertas por SMS',
-            'submit_button'     => 'Obtener mi descuento',
-            'submitting'        => 'Enviando...',
-            'success_headline'  => '¡Tu código de descuento!',
-            'success_body'      => 'Usa este código en el checkout:',
-            'success_close'     => 'Seguir comprando',
-            'error_generic'     => 'Algo salió mal. Por favor intenta de nuevo.',
-            'fineprint'         => 'Al suscribirte aceptas recibir correos promocionales. Puedes darte de baja en cualquier momento.',
-            'aria_close'        => 'Cerrar',
+        'fr' => [
+            'headline'          => '10% de réduction sur votre première commande !',
+            'subhead'           => 'Inscrivez-vous et recevez des offres exclusives par e-mail.',
+            'email_label'       => 'E-mail',
+            'email_placeholder' => 'vous@exemple.com',
+            'phone_label'       => 'Téléphone',
+            'phone_placeholder' => '+33...',
+            'phone_hint'        => "Incluez l'indicatif du pays",
+            'name_label'        => 'Prénom',
+            'sms_opt_in_label'  => 'Je veux aussi recevoir des offres par SMS',
+            'submit_button'     => 'Obtenir ma réduction',
+            'submitting'        => 'Envoi...',
+            'success_headline'  => 'Votre code de réduction !',
+            'success_body'      => 'Utilisez ce code au paiement :',
+            'success_close'     => 'Continuer mes achats',
+            'error_generic'     => "Une erreur est survenue. Veuillez réessayer.",
+            'fineprint'         => "En vous inscrivant vous acceptez de recevoir des e-mails promotionnels. Vous pouvez vous désinscrire à tout moment.",
+            'aria_close'        => 'Fermer',
         ],
         'en' => [
             'headline'          => '10% off your first order!',
@@ -181,7 +167,7 @@ $config['popup'] = [
             'email_label'       => 'Email',
             'email_placeholder' => 'you@example.com',
             'phone_label'       => 'Phone',
-            'phone_placeholder' => '+1...',
+            'phone_placeholder' => '+33...',
             'phone_hint'        => 'Include country code',
             'name_label'        => 'First name',
             'sms_opt_in_label'  => 'Also notify me by SMS for the best deals',
@@ -197,11 +183,10 @@ $config['popup'] = [
     ],
 ];
 
-// Spin wheel — disabled until you set free_gift_product_id to a real product
-// ID from data/products.json. Then flip `enabled` to true.
+// Spin wheel — change free_gift_product_id to a real product ID from data/products.json.
 $config['spin_wheel'] = [
     'enabled'      => true,
-    'default_lang' => 'es',
+    'default_lang' => 'fr',
 
     'free_gift_product_id' => 'mac-destino-mexico-beauty-case',
 
