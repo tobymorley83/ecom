@@ -419,7 +419,7 @@ $config['spin_wheel'] = [
     // below uses this product unless that segment overrides it via
     // `specific_product_id`.
 
-    'free_gift_product_id' => 'mac-destino-mexico-beauty-case',
+    'free_gift_product_id' => 'ado-travel-comfort-gift-set',
 
     // Timing
     'show_after_seconds' => 5,    // auto-open modal after N seconds on first page load
