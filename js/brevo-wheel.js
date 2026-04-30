@@ -122,6 +122,22 @@
         return (digits.length >= 8 && digits.length <= 15) ? '+' + digits : null;
     }
 
+    function buildPrefixOptions(defaultPrefix) {
+        if (!window.Countries || !window.Countries.length) return '<option value="">+</option>';
+        var seen = {}, unique = [];
+        for (var i = 0; i < Countries.length; i++) {
+            var p = Countries[i].prefix;
+            if (!seen[p]) { seen[p] = true; unique.push(p); }
+        }
+        unique.sort(function(a, b) { return parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10); });
+        var html = '';
+        for (var j = 0; j < unique.length; j++) {
+            var sel = (unique[j] === defaultPrefix) ? ' selected' : '';
+            html += '<option value="' + unique[j] + '"' + sel + '>' + unique[j] + '</option>';
+        }
+        return html;
+    }
+
     // =====================================================================
     // Sound engine — plays configured URLs, falls back to Web Audio synthesis
     // =====================================================================
@@ -615,14 +631,23 @@
         }
 
         if (needPhone) {
+            var defaultCode   = (window.SiteConfig && SiteConfig.country) ? SiteConfig.country : '';
+            var defaultPrefix = (window.CountryByCode && CountryByCode[defaultCode])
+                                  ? CountryByCode[defaultCode].prefix : '+1';
+
             body +=
                 '<div class="bw-field">' +
                     '<label class="bw-label" for="bw-phone">' + escapeHtml(t.intro_phone_label) +
                         (cfg.require_phone ? '' : ' <span style="text-transform:none;font-weight:400;opacity:0.7">(optional)</span>') +
                     '</label>' +
-                    '<input class="bw-input" type="tel" id="bw-phone" name="phone" ' +
-                        (cfg.require_phone ? 'required ' : '') +
-                        'placeholder="' + escapeHtml(t.intro_phone_ph) + '" autocomplete="tel" inputmode="tel">' +
+                    '<div class="bw-phone-row">' +
+                        '<select class="bw-input bw-phone-prefix" id="bw-phone-prefix" name="phone_prefix" autocomplete="tel-country-code">' +
+                            buildPrefixOptions(defaultPrefix) +
+                        '</select>' +
+                        '<input class="bw-input bw-phone-number" type="tel" id="bw-phone" name="phone" ' +
+                            (cfg.require_phone ? 'required ' : '') +
+                            'autocomplete="tel-national" inputmode="tel">' +
+                    '</div>' +
                     (t.intro_phone_hint ? '<p class="bw-hint">' + escapeHtml(t.intro_phone_hint) + '</p>' : '') +
                 '</div>' +
                 (cfg.sms_opt_in
@@ -662,11 +687,14 @@
                 }
             }
 
+            var prefixSel = form.querySelector('select[name=phone_prefix]');
             if (phoneInput && phoneInput.value.trim() !== '') {
-                phone = normalizeSms(phoneInput.value);
+                var prefixVal = prefixSel ? prefixSel.value : '';
+                var nationalDigits = phoneInput.value.replace(/\D/g, '');
+                phone = normalizeSms(prefixVal + nationalDigits);
                 if (!phone) {
                     phoneInput.classList.add('bw-invalid');
-                    errorBox.textContent = 'Please include country code, e.g. +52...';
+                    errorBox.textContent = 'Please enter a valid phone number.';
                     errorBox.hidden = false;
                     return;
                 }

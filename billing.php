@@ -11,7 +11,7 @@
 
 $pageTitle = 'Billing';
 $activePage = 'cart';
-$pageScripts = ['/js/countries.js', '/js/billing.js'];
+$pageScripts = ['/js/billing.js'];
 
 $config = require __DIR__ . '/config.php';
 

@@ -47,6 +47,7 @@
 
   <script src="/js/i18n.js"></script>
   <script src="/js/currency.js"></script>
+  <script src="/js/countries.js"></script>
   <script src="/js/ecommerce.js"></script>
   <script src="/js/brevo.js"></script>
   <script src="/js/brevo-popup.js"></script>

@@ -149,6 +149,22 @@
     background: var(--bw-bg);
 }
 .bw-input.bw-invalid { border-color: #dc2626; background: #fef2f2; }
+
+.bw-phone-row {
+    display: flex;
+    gap: 8px;
+}
+.bw-phone-row .bw-phone-prefix {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 90px;
+    max-width: 110px;
+    background: #fff;
+}
+.bw-phone-row .bw-phone-number {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 .bw-hint { font-size: 11px; color: var(--bw-text-2); margin: 0; }
 
 .bw-checkbox {
