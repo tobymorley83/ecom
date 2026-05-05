@@ -86,15 +86,4 @@ include 'includes/header.php';
     </div>
   </section>
 
-  <section class="newsletter" id="contact">
-    <div class="container">
-      <h3 data-i18n="footer.newsletter">Newsletter</h3>
-      <p data-i18n="footer.newsletter_desc">Subscribe to get special offers and updates.</p>
-      <form class="newsletter-form" onsubmit="return false;">
-        <input type="email" data-i18n-placeholder="footer.email_placeholder" placeholder="Your email address">
-        <button type="submit" id="btn-newsletter-subscribe" data-i18n="footer.subscribe">Subscribe</button>
-      </form>
-    </div>
-  </section>
-
 <?php include 'includes/footer.php'; ?>

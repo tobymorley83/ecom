@@ -22,7 +22,7 @@
             <li><a href="/privacy.php" data-i18n="footer.privacy">Privacy Policy</a></li>
           </ul>
         </div>
-        <div class="footer-col">
+        <div class="footer-col" id="contact">
           <h4 data-i18n="footer.contact_us">Contact Us</h4>
           <p><?php echo htmlspecialchars($config['support_email']); ?></p>
           <p style="margin-top:8px">Mon - Fri: 9:00 - 18:00</p>
