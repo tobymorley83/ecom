@@ -1123,7 +1123,7 @@
   },
   "EUR": {
     "symbol": "€",
-    "position": "after",
+    "position": "before",
     "decimals": 2,
     "thousands_sep": ".",
     "decimal_sep": ",",
@@ -2067,7 +2067,7 @@
     ]
   },
   "MXN": {
-    "symbol": "MXN",
+    "symbol": "MX$",
     "position": "before",
     "decimals": 0,
     "thousands_sep": ",",
