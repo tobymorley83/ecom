@@ -14,6 +14,8 @@ $activePage = 'cart';
 $pageScripts = ['/js/billing.js'];
 
 $config = require __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/currency.php';
+ecom_currency_apply($config);
 
 // ── Validate request ─────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -51,7 +53,7 @@ $discountLabel = '';
 if ($discountCode !== '') {
     $codeKey = strtolower($discountCode);
     if (isset($discountCodes[$codeKey]) && $discountCodes[$codeKey]['active']) {
-        $total = $discountCodes[$codeKey]['fixed_price'];
+        $total = ecom_local_price($config, (float) $discountCodes[$codeKey]['fixed_price']);
         $discountLabel = $discountCodes[$codeKey]['label'] ?? '';
     } else {
         $discountCode = '';

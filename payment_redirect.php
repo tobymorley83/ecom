@@ -18,8 +18,10 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
 require_once __DIR__ . '/brevo/client.php';
 require_once __DIR__ . '/brevo/identity.php';
+require_once __DIR__ . '/includes/currency.php';
 
 $config = require __DIR__ . '/config.php';
+ecom_currency_apply($config);
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Location: /cart.php');
@@ -46,7 +48,7 @@ $discountCodes = $config['traffic'][$trafficSource]['discount_codes'] ?? [];
 if ($discountCode !== '') {
     $codeKey = strtolower($discountCode);
     if (isset($discountCodes[$codeKey]) && $discountCodes[$codeKey]['active']) {
-        $total = (float) $discountCodes[$codeKey]['fixed_price'];
+        $total = ecom_local_price($config, (float) $discountCodes[$codeKey]['fixed_price']);
     } else {
         $discountCode = '';
         $total = $subtotal;
@@ -148,8 +150,14 @@ if ($trafficSource !== 'fb') {
     exit;
 }
 
-// FB branch — append billing fields to gateway URL alongside order params
-$checkoutUrl = $config['traffic']['fb']['checkout_url'] ?? '';
+// FB branch — append billing fields to gateway URL alongside order params.
+// If `checkout_urls` (EUR-tier list) is set, pick the URL whose `max` (in EUR)
+// converts to the smallest local threshold greater than the order total.
+// Falls back to the single `checkout_url` for any unmatched / unconfigured case.
+$fbConfig    = $config['traffic']['fb'] ?? [];
+$tiers       = is_array($fbConfig['checkout_urls'] ?? null) ? $fbConfig['checkout_urls'] : [];
+$fallbackUrl = (string) ($fbConfig['checkout_url'] ?? '');
+$checkoutUrl = ecom_pick_checkout_url($config, $tiers, $total, $fallbackUrl);
 if ($checkoutUrl === '' || $checkoutUrl === 'CHANGE_ME_PER_SITE') {
     // Misconfigured — fall back to thank-you so we don't drop the lead
     $_SESSION['last_order'] = [

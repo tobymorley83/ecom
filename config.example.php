@@ -29,22 +29,19 @@ $config['default_lang'] = 'es';
 $config['available_langs'] = ['en', 'es', 'fr', 'de', 'it'];
 
 
-// ── Currency Settings ────────────────────────────────────────────────
-// symbol       : displayed before/after price (e.g. "$", "€", "£")
-// code         : ISO 4217 code (e.g. "USD", "EUR", "MXN", "GBP")
-// position     : 'before' or 'after' the amount
-// decimals     : number of decimal places
-// thousands_sep: thousands separator character
-// decimal_sep  : decimal separator character
+// ── Currency ─────────────────────────────────────────────────────────
+// New minimal format: just set the ISO code. Symbol, position, decimals,
+// and separators come from data/currencies.json (the EUR-anchored price
+// matrix). All money values below (discount fixed_price, checkout_urls
+// max thresholds, etc.) are then expressed in EUR and looked up in
+// the matrix at request time.
+//
+// Legacy fallback (still supported for shops that haven't migrated):
+//   $config['currency'] = [ 'symbol' => '...', 'code' => '...', 'position' => '...',
+//                           'decimals' => 2, 'thousands_sep' => ',', 'decimal_sep' => '.' ];
+//   In legacy mode, money values below are treated as the local currency directly.
 
-$config['currency'] = [
-    'symbol'        => 'MX$',
-    'code'          => 'MXN',
-    'position'      => 'before',   // 'before' = $19.95  |  'after' = 19.95€
-    'decimals'      => 2,
-    'thousands_sep' => ',',
-    'decimal_sep'   => '.',
-];
+$config['currency_code'] = 'MXN';
 
 
 //&ad_id={{ad.id}}&adset_id={{adset.id}}&campaign_id={{campaign.id}}&ad_name={{ad.name}}&adset_name={{adset.name}}&campaign_name={{campaign.name}}&fbclid={{fbclid}}
@@ -54,105 +51,62 @@ $config['traffic'] = [
     // ── Facebook traffic (has fbclid) ────────────────────────────────
     'fb' => [
         'products_file' => '/data/products.json',
+
+        // Single fallback URL — used if checkout_urls is empty/missing,
+        // or if the order total exceeds every tier with no `max => null`
+        // catch-all. Always keep this set to a working gateway URL.
         'checkout_url'  => 'CHANGE_ME_PER_SITE',
-        'allowed_countries' => ['MX', 'ES'],  // ← add this line
 
+        // OPTIONAL tiered routing. `max` is in EUR (matrix mode) or local
+        // currency (legacy). Walks tiers ascending by `max` and picks the
+        // first whose threshold (looked up in the matrix for the shop's
+        // currency) exceeds the order total. Use `'max' => null` for the
+        // catch-all bucket. Comment this block out to keep using only
+        // `checkout_url` above.
+        'checkout_urls' => [
+            [ 'max' => 4.95,  'url' => 'https://gateway/click?key=UNDER_5'  ],
+            [ 'max' => 9.99,  'url' => 'https://gateway/click?key=5_TO_10'  ],
+            [ 'max' => 19.99, 'url' => 'https://gateway/click?key=10_TO_20' ],
+            [ 'max' => 29.99, 'url' => 'https://gateway/click?key=20_TO_30' ],
+            [ 'max' => 39.99, 'url' => 'https://gateway/click?key=30_TO_40' ],
+            [ 'max' => 49.99, 'url' => 'https://gateway/click?key=40_TO_50' ],
+            [ 'max' => 59.99, 'url' => 'https://gateway/click?key=50_TO_60' ],
+            [ 'max' => 69.99, 'url' => 'https://gateway/click?key=60_TO_70' ],
+            [ 'max' => null,  'url' => 'https://gateway/click?key=OVER_70' ],
+        ],
+
+        'allowed_countries' => ['MX', 'ES'],
+
+        // Discount fixed_price values are in EUR when $config['currency_code']
+        // is set (matrix mode), or in local currency in legacy mode.
         'discount_codes' => [
+            'marchsale1' => [ 'label' => 'March Sale',        'fixed_price' => 9.99,  'active' => true  ],
+            'springsale2'=> [ 'label' => 'Spring Special',    'fixed_price' => 14.95, 'active' => true  ],
+            'discount3'  => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.99, 'active' => true  ],
+            'BIENVENIDA10'=>[ 'label' => 'Welcome 10%',       'fixed_price' => 9.99,  'active' => false ],
 
-            'marchsale1' => [
-                'label'       => 'March Sale',
-                'fixed_price' => 219.00,
-                'active'      => true,
-            ],
-        
-            'springsale2' => [
-                'label'       => 'Spring Special',
-                'fixed_price' => 327.00,
-                'active'      => true,
-            ],
-        
-            'discount3' => [
-                'label'       => 'VIP Discount 2026',
-                'fixed_price' => 438.00,
-                'active'      => true,
-            ],
-        
-            'BIENVENIDA10' => [
-                'label'       => 'Special Discount 2026',
-                'fixed_price' => 219.00,
-                'active'      => false,  // disabled — flip to true to activate
-            ],
-            
-           'ruleta10' => [
-               'active' => true,
-               'label'  => 'Ruleta 10%',
-               'fixed_price' => 99,   // or whatever the 10% equivalent is
-           ],
-           
-           'ruleta30' => [
-               'active' => true,
-               'label'  => 'Ruleta 30%',
-               'fixed_price' => 77,
-           ],
-           
-           'ruleta50' => [
-               'active' => true,
-               'label'  => 'Ruleta 50%',
-               'fixed_price' => 55,
-           ],
-
+            'ruleta10'   => [ 'label' => 'Ruleta 10%',        'fixed_price' => 4.95,  'active' => true  ],
+            'ruleta30'   => [ 'label' => 'Ruleta 30%',        'fixed_price' => 3.95,  'active' => true  ],
+            'ruleta50'   => [ 'label' => 'Ruleta 50%',        'fixed_price' => 2.95,  'active' => true  ],
         ],
     ],
 
     // ── Non-Facebook traffic (no fbclid) ─────────────────────────────
+    // Non-FB visitors are routed to /thankyou.php after billing.php (no
+    // payment gateway). `checkout_url` is unused in the new flow but
+    // kept for the legacy /checkout.php path.
     'nonfb' => [
         'products_file' => '/data/products.json',
         'checkout_url'  => '/checkout_form.php',
 
         'discount_codes' => [
-
-            'marchsale1' => [
-                'label'       => 'March Sale',
-                'fixed_price' => 219.00,
-                'active'      => true,
-            ],
-        
-            'springsale2' => [
-                'label'       => 'Spring Special',
-                'fixed_price' => 327.00,
-                'active'      => true,
-            ],
-        
-            'discount3' => [
-                'label'       => 'VIP Discount 2026',
-                'fixed_price' => 438.00,
-                'active'      => true,
-            ],
-    
-            'BIENVENIDA10' => [
-                'label'       => 'Special Discount 2026',
-                'fixed_price' => 219.00,
-                'active'      => true,  // disabled — flip to true to activate
-            ],
-            
-           'ruleta10' => [
-               'active' => true,
-               'label'  => 'Ruleta 10%',
-               'fixed_price' => 99,   // or whatever the 10% equivalent is
-           ],
-           
-           'ruleta30' => [
-               'active' => true,
-               'label'  => 'Ruleta 30%',
-               'fixed_price' => 77,
-           ],
-           
-           'ruleta50' => [
-               'active' => true,
-               'label'  => 'Ruleta 50%',
-               'fixed_price' => 55,
-           ],
-
+            'marchsale1' => [ 'label' => 'March Sale',        'fixed_price' => 9.99,  'active' => true  ],
+            'springsale2'=> [ 'label' => 'Spring Special',    'fixed_price' => 14.95, 'active' => true  ],
+            'discount3'  => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.99, 'active' => true  ],
+            'BIENVENIDA10'=>[ 'label' => 'Welcome 10%',       'fixed_price' => 9.99,  'active' => true  ],
+            'ruleta10'   => [ 'label' => 'Ruleta 10%',        'fixed_price' => 4.95,  'active' => true  ],
+            'ruleta30'   => [ 'label' => 'Ruleta 30%',        'fixed_price' => 3.95,  'active' => true  ],
+            'ruleta50'   => [ 'label' => 'Ruleta 50%',        'fixed_price' => 2.95,  'active' => true  ],
         ],
     ],
 

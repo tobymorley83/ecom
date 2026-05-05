@@ -11,6 +11,11 @@ if (!isset($config)) {
     $config = require __DIR__ . '/../config.php';
 }
 
+// Resolve currency settings from data/currencies.json when this shop
+// has switched to $config['currency_code']. No-op in legacy mode.
+require_once __DIR__ . '/currency.php';
+ecom_currency_apply($config);
+
 // ── BREVO: ensure bo_uid (read-only here; header.php already set it) ─
 // If header.php already ran brevo_ensure_uid(), $brevoUid is in scope.
 // If config-js.php is included from somewhere else, fall back to read-only.
@@ -91,9 +96,10 @@ $resolvedTraffic = $config['traffic'][$trafficSource] ?? $config['traffic']['non
 $jsDiscountCodes = [];
 foreach ($resolvedTraffic['discount_codes'] as $code => $data) {
     if ($data['active']) {
+        // In matrix mode, fixed_price is in EUR — localize for the front-end.
         $jsDiscountCodes[$code] = [
             'label'       => $data['label'],
-            'fixed_price' => $data['fixed_price'],
+            'fixed_price' => ecom_local_price($config, (float) $data['fixed_price']),
         ];
     }
 }

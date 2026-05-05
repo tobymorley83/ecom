@@ -5,27 +5,41 @@ $config = [];
 $config['default_lang']    = 'fr';
 $config['available_langs'] = ['en', 'es', 'fr', 'de', 'it'];
 
-$config['currency'] = [
-    'symbol'        => '€',
-    'code'          => 'EUR',
-    'position'      => 'before',
-    'decimals'      => 2,
-    'thousands_sep' => ',',
-    'decimal_sep'   => '.',
-];
+// Currency: code only — symbol/decimals/separators come from
+// data/currencies.json. Money values below (discount fixed_price,
+// checkout_urls max) are in EUR.
+$config['currency_code'] = 'EUR';
 
 $config['traffic'] = [
 
     'fb' => [
         'products_file'     => '/data/products.json',
+
+        // Single fallback URL (used if checkout_urls below is empty/unmatched).
         'checkout_url'      => 'https://letsgo.fruityapples.sbs/click?key=34b2be9ae12e464490297ad0461a6b48',
+
+        // OPTIONAL tier-based routing. `max` is in EUR. Fill in the URLs for
+        // each tier per shop, or comment this block out to keep using the
+        // single `checkout_url` above.
+        // 'checkout_urls' => [
+        //     [ 'max' => 4.95,  'url' => '...' ],
+        //     [ 'max' => 9.99,  'url' => '...' ],
+        //     [ 'max' => 19.99, 'url' => '...' ],
+        //     [ 'max' => 29.99, 'url' => '...' ],
+        //     [ 'max' => 39.99, 'url' => '...' ],
+        //     [ 'max' => 49.99, 'url' => '...' ],
+        //     [ 'max' => 59.99, 'url' => '...' ],
+        //     [ 'max' => 69.99, 'url' => '...' ],
+        //     [ 'max' => null,  'url' => '...' ],
+        // ],
+
         'allowed_countries' => ['FR', 'ES'],
 
         'discount_codes' => [
-            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.95, 'active' => true  ],
-            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.95,  'active' => true  ],
-            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.95, 'active' => true  ],
-            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.95,  'active' => false ],
+            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.99, 'active' => true  ],
+            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.99,  'active' => true  ],
+            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.99, 'active' => true  ],
+            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.99,  'active' => false ],
         ],
     ],
 
@@ -34,10 +48,10 @@ $config['traffic'] = [
         'checkout_url'  => '/checkout_form.php', // unused by new billing flow; legacy fallback
 
         'discount_codes' => [
-            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.95, 'active' => true  ],
-            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.95,  'active' => true  ],
-            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.95, 'active' => true  ],
-            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.95,  'active' => false ],
+            'marchsale1'  => [ 'label' => 'March Sale',        'fixed_price' => 19.99, 'active' => true  ],
+            'springsale2' => [ 'label' => 'Spring Special',    'fixed_price' => 9.99,  'active' => true  ],
+            'springsale3' => [ 'label' => 'VIP Discount 2026', 'fixed_price' => 19.99, 'active' => true  ],
+            'offer4'      => [ 'label' => 'Big offer 4',       'fixed_price' => 9.99,  'active' => false ],
         ],
     ],
 
