@@ -49,6 +49,9 @@ function ecom_currency_apply(array &$config): void
         'decimals'      => (int)    ($entry['decimals']      ?? 2),
         'thousands_sep' => (string) ($entry['thousands_sep'] ?? ','),
         'decimal_sep'   => (string) ($entry['decimal_sep']   ?? '.'),
+        // Exposed to JS so Products.load can localize EUR-denominated
+        // prices in products.json via the same matrix.
+        'prices'        => is_array($entry['prices'] ?? null) ? $entry['prices'] : [],
     ], $existing);
 }
 

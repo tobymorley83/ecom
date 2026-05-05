@@ -2,6 +2,24 @@ var Products = (function() {
   var allProducts = [];
   var currentFilter = 'all';
 
+  // Look up the local-currency equivalent of an EUR price-point using the
+  // matrix exposed via SiteConfig.currency.prices. No-op in legacy mode
+  // (where products.json values are already in local currency).
+  function priceLocal(eur) {
+    if (typeof eur !== 'number' || !isFinite(eur) || eur <= 0) return eur;
+    if (typeof SiteConfig === 'undefined' || !SiteConfig.currency) return eur;
+    var prices = SiteConfig.currency.prices;
+    if (!prices || typeof prices !== 'object') return eur;
+
+    var bestKey = null, bestDiff = Infinity;
+    for (var k in prices) {
+      if (!Object.prototype.hasOwnProperty.call(prices, k)) continue;
+      var diff = Math.abs(parseFloat(k) - eur);
+      if (diff < bestDiff) { bestDiff = diff; bestKey = k; }
+    }
+    return bestKey !== null ? prices[bestKey] : eur;
+  }
+
   function load(callback) {
     var xhr = new XMLHttpRequest();
     var productsUrl = (typeof SiteConfig !== 'undefined' && SiteConfig.productsFile) ? SiteConfig.productsFile : '/data/products.json';
@@ -9,6 +27,12 @@ var Products = (function() {
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {
         allProducts = JSON.parse(xhr.responseText);
+        // Localize prices via the matrix when matrix mode is active.
+        for (var i = 0; i < allProducts.length; i++) {
+          var p = allProducts[i];
+          if (typeof p.price === 'number')         p.price         = priceLocal(p.price);
+          if (typeof p.originalPrice === 'number') p.originalPrice = priceLocal(p.originalPrice);
+        }
         if (callback) callback(allProducts);
       }
     };
