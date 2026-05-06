@@ -16,11 +16,12 @@ brevo/*.local.php
 brevo/outbox/
 brevo/outbox-failed/
 
-# Deploy config (per-site webhook secret)
+# Per-site deploy override (rarely needed — see deploy.php). Anything
+# in /config/ that isn't part of the tracked shared config (deploy.php)
+# is gitignored so it never gets pushed across shops.
 /config/config.php
 /config/config.ini
 /config/config.*.php
-!/config/config.example.php
 /config/site.json
 /config/products.json
 

@@ -2,13 +2,17 @@
 /**
  * GitHub Webhook — auto-deploy on push to main.
  *
- * Loads the shared deploy config (tracked at config/deploy.php) and
- * optionally merges a per-site override (config/config.php, gitignored).
+ * Defaults (used by every shop, with NO per-site config required):
+ *   webhook_secret  — config/deploy.php (tracked, shared across shops)
+ *   repo_path       — __DIR__   (the directory deploy.php is in)
+ *   site_key        — first label of $config['site_url']'s host,
+ *                     or basename(__DIR__) as a fallback
  *
- *   site_key   — from override, else parsed from the main site config's
- *                site_url (host minus TLD), else basename of the install dir
- *   repo_path  — from override, else __DIR__
- *   secret     — from override, else the shared secret in config/deploy.php
+ * config/config.php is OPTIONAL and ONLY for the rare case where one
+ * shop needs to override one of those defaults (e.g. rotate the
+ * webhook secret on a single shop). It is gitignored — there is no
+ * tracked template — so it can never be created accidentally by a
+ * fresh deploy. If you don't have one, you don't need one.
  */
 
 $shared_path   = __DIR__ . '/config/deploy.php';
