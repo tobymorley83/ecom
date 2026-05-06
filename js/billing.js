@@ -40,6 +40,7 @@
     if (phoneInput) {
       phoneInput.addEventListener('blur', function () {
         var fixed = stripDuplicatePrefix(phoneInput.value, prefixSelect.value);
+        fixed = stripLeadingZero(fixed);
         if (fixed !== phoneInput.value) phoneInput.value = fixed;
       });
     }
@@ -100,6 +101,17 @@
     return trimmed;
   }
 
+  // Strip a leading 0 — the domestic trunk prefix that doesn't belong
+  // in E.164 (FR/UK 07→7, DE 0→, SA 05→5, most others). Only strips
+  // when enough digits remain so a half-typed input isn't mangled.
+  function stripLeadingZero(rawInput) {
+    if (!rawInput) return rawInput;
+    var trimmed = String(rawInput).trim();
+    if (trimmed.charAt(0) !== '0') return trimmed;
+    var rest = trimmed.replace(/^0+/, '');
+    return rest.replace(/\D/g, '').length >= 6 ? rest : trimmed;
+  }
+
   function parseE164(e164) {
     if (!e164 || !window.Countries) return null;
     var seen = {};
@@ -120,6 +132,7 @@
     if (typeof Brevo === 'undefined' || !Brevo.identify) return;
     var prefixDigits = (prefixSelect.value || '').replace(/[^\d]/g, '');
     var phoneDigits  = (document.getElementById('bf_phone').value || '').replace(/[^\d]/g, '');
+    phoneDigits = phoneDigits.replace(/^0+/, '');
     Brevo.identify({
       email:     document.getElementById('bf_email').value,
       sms:       prefixDigits ? '+' + prefixDigits + phoneDigits : '',

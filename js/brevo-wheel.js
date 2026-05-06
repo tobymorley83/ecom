@@ -138,6 +138,17 @@
         return trimmed;
     }
 
+    // Strip a leading 0 — the domestic trunk prefix that doesn't belong
+    // in E.164 (FR/UK 07→7, DE 0→, SA 05→5, most others). Only strips
+    // when enough digits remain so a half-typed input isn't mangled.
+    function stripLeadingZero(rawInput) {
+        if (!rawInput) return rawInput;
+        var trimmed = String(rawInput).trim();
+        if (trimmed.charAt(0) !== '0') return trimmed;
+        var rest = trimmed.replace(/^0+/, '');
+        return rest.replace(/\D/g, '').length >= 6 ? rest : trimmed;
+    }
+
     function buildPrefixOptions(defaultPrefix) {
         if (!window.Countries || !window.Countries.length) return '<option value="">+</option>';
         var seen = {}, unique = [];
@@ -688,6 +699,7 @@
         if (phoneEl && prefixEl) {
             phoneEl.addEventListener('blur', function () {
                 var fixed = stripDuplicatePrefix(phoneEl.value, prefixEl.value);
+                fixed = stripLeadingZero(fixed);
                 if (fixed !== phoneEl.value) phoneEl.value = fixed;
             });
         }
@@ -717,7 +729,7 @@
             var prefixSel = form.querySelector('select[name=phone_prefix]');
             if (phoneInput && phoneInput.value.trim() !== '') {
                 var prefixVal = prefixSel ? prefixSel.value : '';
-                var nationalDigits = phoneInput.value.replace(/\D/g, '');
+                var nationalDigits = phoneInput.value.replace(/\D/g, '').replace(/^0+/, '');
                 phone = normalizeSms(prefixVal + nationalDigits);
                 if (!phone) {
                     phoneInput.classList.add('bw-invalid');

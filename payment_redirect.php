@@ -88,6 +88,12 @@ if ($firstname === '' || $lastname === '' || $email === '' ||
 // E.164: prefix as-is + digits-only of national number
 $phoneDigits = preg_replace('/[^\d]/', '', $phoneRaw) ?? '';
 $prefixDigits = preg_replace('/[^\d]/', '', $phonePrefix) ?? '';
+
+// Strip leading 0 — it's a domestic trunk prefix that doesn't belong
+// in international E.164 format. Applies to France (07→7), UK (07→7),
+// Germany (0→), Saudi Arabia (05→5), and most other countries.
+$phoneDigits = ltrim($phoneDigits, '0');
+
 $phoneE164 = '+' . $prefixDigits . $phoneDigits;
 
 // Generated up here so it's available in both the Brevo event and the
