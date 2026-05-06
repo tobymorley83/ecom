@@ -72,6 +72,24 @@ function getVisitorCountry() {
     return $country;
 }
 
+// ── Capture FB ad tokens on landing ──────────────────────────────────
+// FB ad URLs land on the shop carrying these params; we stash them in
+// session so they survive cart → billing → payment_redirect, where
+// they get re-attached to the Binom URL (Binom t1..t7 read them by
+// parameter name).
+$fbAdTokenKeys = [
+    'ad_id', 'adset_id', 'campaign_id',
+    'ad_name', 'adset_name', 'campaign_name',
+    'fbclid',
+];
+$_SESSION['fb_tokens'] = $_SESSION['fb_tokens'] ?? [];
+foreach ($fbAdTokenKeys as $k) {
+    if (isset($_GET[$k])) {
+        $v = trim((string) $_GET[$k]);
+        if ($v !== '') $_SESSION['fb_tokens'][$k] = $v;
+    }
+}
+
 // ── Resolve traffic source (all server-side) ─────────────────────────
 // Check fbclid
 $hasFbclid = isset($_GET['fbclid']) && !empty(trim($_GET['fbclid']));

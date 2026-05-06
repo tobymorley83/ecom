@@ -197,14 +197,25 @@ $params = [
     'aff_sub4'     => $email,
     'adv_sub'      => $phoneE164,
 
-    // Binom traffic-source tokens — let postbacks tie a conversion
-    // back to a Brevo contact via bo_uid / email / phone / order_id.
-    't1'           => $uid,
-    't2'           => brevo_normalize_email($email) ?: $email,
-    't3'           => brevo_normalize_sms($phoneE164) ?: $phoneE164,
-    't4'           => preg_replace('/^www\./', '', (string) (parse_url($config['site_url'], PHP_URL_HOST) ?: '')),
-    't5'           => $orderId,
+    // Lead-tracking tokens — Binom maps each of these named params to
+    // its own token slot (e.g. t23..t27) so postbacks can tie a
+    // conversion back to a Brevo contact + the original order.
+    'bo_uid'       => $uid,
+    'lead_email'   => brevo_normalize_email($email) ?: $email,
+    'lead_phone'   => brevo_normalize_sms($phoneE164) ?: $phoneE164,
+    'store_domain' => preg_replace('/^www\./', '', (string) (parse_url($config['site_url'], PHP_URL_HOST) ?: '')),
+    'order_id'     => $orderId,
 ];
+
+// Re-attach the FB ad tokens captured when the visitor first landed
+// on the shop (Binom t1..t7 read them by parameter name).
+if (!empty($_SESSION['fb_tokens']) && is_array($_SESSION['fb_tokens'])) {
+    foreach ($_SESSION['fb_tokens'] as $k => $v) {
+        if (!array_key_exists($k, $params) && $v !== '') {
+            $params[$k] = $v;
+        }
+    }
+}
 
 $separator = (strpos($checkoutUrl, '?') !== false) ? '&' : '?';
 $redirectUrl = $checkoutUrl . $separator . http_build_query($params);
