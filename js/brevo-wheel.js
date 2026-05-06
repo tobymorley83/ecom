@@ -122,6 +122,22 @@
         return (digits.length >= 8 && digits.length <= 15) ? '+' + digits : null;
     }
 
+    function stripDuplicatePrefix(rawInput, prefixValue) {
+        if (!rawInput) return rawInput;
+        var trimmed = String(rawInput).trim();
+        if (trimmed.charAt(0) === '+') trimmed = trimmed.slice(1);
+
+        var prefixDigits = (prefixValue || '').replace(/\D/g, '');
+        if (!prefixDigits) return trimmed;
+
+        var nationalDigits = trimmed.replace(/\D/g, '');
+        if (nationalDigits.indexOf(prefixDigits) === 0) {
+            var stripped = nationalDigits.slice(prefixDigits.length);
+            if (stripped.length >= 6) return stripped;
+        }
+        return trimmed;
+    }
+
     function buildPrefixOptions(defaultPrefix) {
         if (!window.Countries || !window.Countries.length) return '<option value="">+</option>';
         var seen = {}, unique = [];
@@ -664,6 +680,17 @@
         var el = createModalShell(body, { showMinimize: true });
         var form = el.querySelector('form');
         var errorBox = el.querySelector('.bw-error');
+
+        // Autocorrect on blur: if browser autofill duplicates the
+        // dialing-code into the national-number field, strip it.
+        var phoneEl  = form.querySelector('input[name=phone]');
+        var prefixEl = form.querySelector('select[name=phone_prefix]');
+        if (phoneEl && prefixEl) {
+            phoneEl.addEventListener('blur', function () {
+                var fixed = stripDuplicatePrefix(phoneEl.value, prefixEl.value);
+                if (fixed !== phoneEl.value) phoneEl.value = fixed;
+            });
+        }
 
         form.addEventListener('submit', function (ev) {
             ev.preventDefault();

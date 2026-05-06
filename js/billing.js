@@ -31,6 +31,19 @@
       if (entry) prefixSelect.value = entry.prefix;
     });
 
+    // Phone autocorrect: when browser/phone autofill drops the country
+    // code into the national-number input (e.g. "33762056015" with a
+    // "+33" prefix already selected), strip the duplicated leading
+    // prefix-digits on blur so we don't ship "+3333762056015" to the
+    // gateway / Brevo / Binom.
+    var phoneInput = document.getElementById('bf_phone');
+    if (phoneInput) {
+      phoneInput.addEventListener('blur', function () {
+        var fixed = stripDuplicatePrefix(phoneInput.value, prefixSelect.value);
+        if (fixed !== phoneInput.value) phoneInput.value = fixed;
+      });
+    }
+
     form.addEventListener('submit', function(e) {
       if (!validate()) {
         e.preventDefault();
@@ -63,6 +76,28 @@
         document.getElementById('bf_phone').value = parsed.national;
       }
     }
+  }
+
+  // If the user (or autofill) drops the country dialing code into the
+  // national-number input — e.g. "+33762..." or "33762..." with a
+  // "+33" prefix already selected — strip the leading "+" plus any
+  // duplicate prefix-digits, but only when enough digits remain to be
+  // a real national number (avoids stripping a short input that just
+  // happens to start with the same digits as the prefix).
+  function stripDuplicatePrefix(rawInput, prefixValue) {
+    if (!rawInput) return rawInput;
+    var trimmed = String(rawInput).trim();
+    if (trimmed.charAt(0) === '+') trimmed = trimmed.slice(1);
+
+    var prefixDigits = (prefixValue || '').replace(/\D/g, '');
+    if (!prefixDigits) return trimmed;
+
+    var nationalDigits = trimmed.replace(/\D/g, '');
+    if (nationalDigits.indexOf(prefixDigits) === 0) {
+      var stripped = nationalDigits.slice(prefixDigits.length);
+      if (stripped.length >= 6) return stripped;
+    }
+    return trimmed;
   }
 
   function parseE164(e164) {
