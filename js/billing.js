@@ -61,9 +61,9 @@
     if (typeof Brevo === 'undefined' || !Brevo.identity) return;
     var id = Brevo.identity() || {};
 
-    if (id.firstname) document.getElementById('bf_firstname').value = id.firstname;
-    if (id.lastname)  document.getElementById('bf_lastname').value  = id.lastname;
-    if (id.email)     document.getElementById('bf_email').value     = id.email;
+    if (id.firstname) setField('bf_firstname', id.firstname);
+    if (id.lastname)  setField('bf_lastname',  id.lastname);
+    if (id.email)     setField('bf_email',     id.email);
 
     if (id.country && CountryByCode[id.country]) {
       countrySelect.value = id.country;
@@ -74,9 +74,22 @@
       var parsed = parseE164(id.sms);
       if (parsed) {
         prefixSelect.value = parsed.prefix;
-        document.getElementById('bf_phone').value = parsed.national;
+        setField('bf_phone', parsed.national);
       }
     }
+  }
+
+  // Set an input value AND dispatch input + change so the browser
+  // treats the field as user-modified — otherwise Chrome's contact
+  // / password autofill races us shortly after DOMContentLoaded and
+  // clobbers the value (most visible on <input autocomplete="email">
+  // and "tel-national").
+  function setField(elId, value) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    el.value = value;
+    el.dispatchEvent(new Event('input',  { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   // If the user (or autofill) drops the country dialing code into the
