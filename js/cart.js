@@ -9,6 +9,47 @@ var Cart = (function() {
     }
   }
 
+  // Resolve the localized display name of a product object using the
+  // language-aware getInfo helper. Falls back to whatever flat .name
+  // is on the object, then to the id.
+  function resolveName(product) {
+    if (!product) return '';
+    var lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
+    if (typeof Products !== 'undefined' && Products.getInfo) {
+      var info = Products.getInfo(product, lang);
+      if (info && info.name) return info.name;
+    }
+    return product.name || product.id || '';
+  }
+
+  // Build a "Product A, Product B" string from the live cart, skipping
+  // free gifts. Looks up missing names via Products for items that
+  // pre-date the name-on-cart-item migration.
+  function brevoNames(items) {
+    var names = [];
+    for (var j = 0; j < items.length; j++) {
+      var it = items[j];
+      if (it.is_free_gift) continue;
+      var n = it.name;
+      if (!n && typeof Products !== 'undefined' && Products.getById) {
+        var p = Products.getById(it.id);
+        if (p) n = resolveName(p);
+      }
+      if (n) names.push(n);
+    }
+    return names.join(', ');
+  }
+
+  function fireBrevoCartUpdated() {
+    if (!window.Brevo) return;
+    var items = getItems();
+    Brevo.cartUpdated(items, {
+      total:         getTotal(),
+      currency:      (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : '',
+      product_names: brevoNames(items)
+    });
+  }
+
   function saveItems(items) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     updateCartCount();
@@ -31,6 +72,7 @@ var Cart = (function() {
     } else {
       items.push({
         id: product.id,
+        name: resolveName(product),
         price: product.price,
         originalPrice: product.originalPrice,
         image: product.image,
@@ -41,13 +83,7 @@ var Cart = (function() {
     saveItems(items);
     showToast(I18n.t('products.add_to_cart') + '!');
     animateCartCount();
-
-    if (window.Brevo) {
-      Brevo.cartUpdated(getItems(), {
-        total:    getTotal(),
-        currency: (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : ''
-      });
-    }
+    fireBrevoCartUpdated();
   }
 
   function removeItem(productId) {
@@ -59,13 +95,7 @@ var Cart = (function() {
       }
     }
     saveItems(filtered);
-
-    if (window.Brevo) {
-      Brevo.cartUpdated(getItems(), {
-        total:    getTotal(),
-        currency: (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : ''
-      });
-    }
+    fireBrevoCartUpdated();
   }
 
     function updateQty(productId, qty) {
@@ -78,13 +108,7 @@ var Cart = (function() {
             // For free gifts, we deliberately do nothing — qty stays at 1.
         }
         saveItems(items);
-    
-        if (window.Brevo) {
-            Brevo.cartUpdated(getItems(), {
-                total: getTotal(),
-                currency: (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : ''
-            });
-        }
+        fireBrevoCartUpdated();
     }
 
   function getTotal() {

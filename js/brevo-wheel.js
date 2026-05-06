@@ -914,8 +914,11 @@
             if (existing) {
                 existing.qty += 1;
             } else {
+                var giftLang = (window.I18n && I18n.getLang) ? I18n.getLang() : 'en';
+                var giftInfo = (typeof Products !== 'undefined' && Products.getInfo) ? Products.getInfo(product, giftLang) : null;
                 items.push({
                     id: targetProductId,
+                    name: (giftInfo && giftInfo.name) || product.name || targetProductId,
                     price: 0,
                     originalPrice: product.originalPrice || product.price,
                     image: product.image,

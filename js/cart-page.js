@@ -294,10 +294,12 @@ var CartPage = (function() {
     // Fire Brevo checkout_started BEFORE the form submit so beacon goes out cleanly
     if (window.Brevo) {
       Brevo.checkoutStarted(items, {
-        total:    finalTotal,
-        currency: (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : '',
-        subtotal: subtotal,
-        discount_code: discountCode
+        total:         finalTotal,
+        currency:      (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : '',
+        subtotal:      subtotal,
+        discount_code: discountCode,
+        product_names: productNames.join(', '),
+        product_ids:   productIds.join(', ')
       });
     }
 
