@@ -90,6 +90,10 @@ $phoneDigits = preg_replace('/[^\d]/', '', $phoneRaw) ?? '';
 $prefixDigits = preg_replace('/[^\d]/', '', $phonePrefix) ?? '';
 $phoneE164 = '+' . $prefixDigits . $phoneDigits;
 
+// Generated up here so it's available in both the Brevo event and the
+// Binom redirect tokens below.
+$orderId = 'ORD-' . strtoupper(bin2hex(random_bytes(6)));
+
 // ── Push lead to middleware (saves to its MySQL → Brevo) ─────────────
 $uid = brevo_current_uid() ?: brevo_ensure_uid();
 
@@ -110,6 +114,7 @@ $brevoPayload = [
     ],
 
     'properties' => [
+        'order_id'       => $orderId,
         'traffic_source' => $trafficSource,
         'lang'           => $lang,
         'currency'       => $config['currency']['code'],
@@ -128,8 +133,6 @@ $brevoPayload = [
 ];
 
 brevo_send('billing_submitted', $brevoPayload);
-
-$orderId = 'ORD-' . strtoupper(bin2hex(random_bytes(6)));
 
 // ── Branch: non-FB → thank-you page; FB → 3rd-party gateway ──────────
 if ($trafficSource !== 'fb') {
@@ -193,6 +196,14 @@ $params = [
     'aff_sub3'     => $address,
     'aff_sub4'     => $email,
     'adv_sub'      => $phoneE164,
+
+    // Binom traffic-source tokens — let postbacks tie a conversion
+    // back to a Brevo contact via bo_uid / email / phone / order_id.
+    't1'           => $uid,
+    't2'           => brevo_normalize_email($email) ?: $email,
+    't3'           => brevo_normalize_sms($phoneE164) ?: $phoneE164,
+    't4'           => preg_replace('/^www\./', '', (string) (parse_url($config['site_url'], PHP_URL_HOST) ?: '')),
+    't5'           => $orderId,
 ];
 
 $separator = (strpos($checkoutUrl, '?') !== false) ? '&' : '?';
