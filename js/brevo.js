@@ -195,8 +195,12 @@
         };
         if (totals && typeof totals === 'object') {
             if (totals.total != null)    props.total    = totals.total;
+            if (totals.subtotal != null) props.subtotal = totals.subtotal;
             if (totals.currency)         props.currency = totals.currency;
             if (totals.discount != null) props.discount = totals.discount;
+            if (totals.discount_code)    props.discount_code = totals.discount_code;
+            if (totals.product_names)    props.product_names = totals.product_names;
+            if (totals.product_ids)      props.product_ids   = totals.product_ids;
         }
         return props;
     }
