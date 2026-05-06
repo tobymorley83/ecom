@@ -40,13 +40,27 @@ var Cart = (function() {
     return names.join(', ');
   }
 
+  // Parallel to brevoNames — comma-joined product IDs, free gifts excluded.
+  // Gifts get tracked separately on spin_wheel_won, so cart_updated stays
+  // focused on items the user actively chose to buy.
+  function brevoIds(items) {
+    var ids = [];
+    for (var j = 0; j < items.length; j++) {
+      var it = items[j];
+      if (it.is_free_gift) continue;
+      if (it.id) ids.push(it.id);
+    }
+    return ids.join(', ');
+  }
+
   function fireBrevoCartUpdated() {
     if (!window.Brevo) return;
     var items = getItems();
     Brevo.cartUpdated(items, {
       total:         getTotal(),
       currency:      (typeof SiteConfig !== 'undefined' && SiteConfig.currency) ? SiteConfig.currency : '',
-      product_names: brevoNames(items)
+      product_names: brevoNames(items),
+      product_ids:   brevoIds(items)
     });
   }
 
